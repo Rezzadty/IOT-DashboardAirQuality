@@ -162,4 +162,163 @@
   .welcome-card h2 {
     font-size: 22px;
   }
-} 
+}
+
+/* Logout Popup */
+.logout-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeInOverlay 0.3s ease;
+}
+
+@keyframes fadeInOverlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.logout-popup-overlay.fade-out {
+  animation: fadeOutOverlay 0.3s ease forwards;
+}
+
+@keyframes fadeOutOverlay {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.logout-popup {
+  background: white;
+  border-radius: 16px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.4s ease;
+  min-width: 400px;
+  max-width: 500px;
+}
+
+.logout-popup.fade-out {
+  animation: popOut 0.3s ease forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes popOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+}
+
+.logout-popup h3 {
+  color: #333;
+  font-size: 24px;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.logout-popup p {
+  color: #666;
+  font-size: 16px;
+  margin: 0 0 30px 0;
+  line-height: 1.5;
+}
+
+.logout-popup-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.logout-popup-buttons button {
+  padding: 12px 30px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: none;
+  min-width: 120px;
+}
+
+.cancel-btn {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.cancel-btn:hover {
+  background: #e0e0e0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a6f);
+  color: white;
+}
+
+.confirm-btn:hover {
+  background: linear-gradient(135deg, #ee5a6f, #ff6b6b);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+}
+
+.logout-popup-buttons button:active {
+  transform: translateY(0);
+}
+
+/* Responsive for Logout Popup */
+@media (max-width: 480px) {
+  .logout-popup {
+    min-width: 320px;
+    max-width: 90%;
+    padding: 30px 20px;
+    margin: 0 20px;
+  }
+
+  .logout-popup h3 {
+    font-size: 20px;
+  }
+
+  .logout-popup p {
+    font-size: 14px;
+  }
+
+  .logout-popup-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .logout-popup-buttons button {
+    width: 100%;
+    min-width: auto;
+  }
+}

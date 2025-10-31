@@ -38,26 +38,6 @@ const Dashboard = () => {
             <p><strong>Waktu Login:</strong> {session?.loginTime ? new Date(session.loginTime).toLocaleString('id-ID') : '-'}</p>
           </div>
         </div>
-
-        <div className="info-cards">
-          <div className="info-card">
-            <div className="info-icon">✅</div>
-            <h3>Login Berhasil</h3>
-            <p>Sistem autentikasi bekerja dengan baik</p>
-          </div>
-
-          <div className="info-card">
-            <div className="info-icon">🔒</div>
-            <h3>Keamanan</h3>
-            <p>Kredensial terenkripsi dengan AES</p>
-          </div>
-
-          <div className="info-card">
-            <div className="info-icon">💾</div>
-            <h3>Session Active</h3>
-            <p>Data tersimpan di localStorage</p>
-          </div>
-        </div>
       </div>
     </div>
   );

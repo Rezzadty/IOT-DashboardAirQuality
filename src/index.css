@@ -3,9 +3,19 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Color Scheme Variables */
+  --bg-primary: #0D1B2A;        /* Background utama - Biru gelap */
+  --bg-card: #1B263B;           /* Card/panel - Biru keabu-abuan */
+  --text-primary: #E0E1DD;      /* Teks utama - Abu muda */
+  --text-secondary: #A9B7C0;    /* Teks sekunder - Abu kebiruan */
+  --accent-active: #00B4D8;     /* Aksen tombol/link aktif - Cyan */
+  --data-chart: #90E0EF;        /* Warna grafik data - Biru muda */
+  --warning: #FB8500;           /* Warna peringatan - Oranye */
+  --danger: #E63946;            /* Warna bahaya - Merah */
+  --safe: #2ECC71;              /* Warna aman - Hijau */
+
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,10 +34,17 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
+  padding: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow-x: hidden;
+}
+
+/* Responsive Box Sizing */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
 h1 {

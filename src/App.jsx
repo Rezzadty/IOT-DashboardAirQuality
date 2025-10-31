@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Login from './auth/login/login.jsx'
-import Dashboard from './components/Dashboard'
+import Dashboard from './dashboard/Dashboard.jsx'
 import { isAuthenticated } from './auth/authHelper'
 import './App.css'
 

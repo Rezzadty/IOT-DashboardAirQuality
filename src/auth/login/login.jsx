@@ -7,6 +7,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Secret key untuk enkripsi (idealnya dari environment variable)
   const SECRET_KEY = import.meta.env.VITE_SECRET_KEY || 'iot-dashboard-secret-key-2025';
@@ -53,6 +55,9 @@ const Login = () => {
     setTimeout(() => {
       // Validasi kredensial
       if (validateCredentials(username, password)) {
+        // Show success popup
+        setShowSuccessPopup(true);
+        
         // Simpan status login di localStorage
         const sessionData = {
           isAuthenticated: true,
@@ -61,8 +66,15 @@ const Login = () => {
         };
         localStorage.setItem('userSession', JSON.stringify(sessionData));
         
-        // Redirect ke dashboard atau halaman utama
-        window.location.href = '/dashboard';
+        // Mulai transisi fade out setelah 1.2 detik
+        setTimeout(() => {
+          setIsTransitioning(true);
+        }, 1200);
+        
+        // Redirect ke dashboard setelah transisi selesai (total 2 detik)
+        setTimeout(() => {
+          window.location.href = '/dashboard';
+        }, 2000);
       } else {
         setError('Username atau password salah');
         setLoading(false);
@@ -82,7 +94,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
+    <div className={`login-container ${isTransitioning ? 'fade-out' : ''}`}>
       <div className="login-card">
         <div className="login-header">
           <h2>Login</h2>
@@ -134,6 +146,17 @@ const Login = () => {
           </button>
         </form>
       </div>
+
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="success-popup-overlay">
+          <div className="success-popup">
+            <div className="success-icon">✓</div>
+            <h3>Login Berhasil!</h3>
+            <p>Mengalihkan ke dashboard...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

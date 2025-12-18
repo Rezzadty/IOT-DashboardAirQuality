@@ -1,10 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { getUserSession, logout } from '../auth/authHelper';
+import Table from '../../components/table/Table';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const [session, setSession] = useState(null);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
+  const [sensorData, setSensorData] = useState([
+    // Data dummy untuk contoh tabel
+    {
+      id: 1,
+      humidity: 77.73,
+      temperature: 29.37,
+      mq135_ratio: 216,
+      mq7_ratio: 12.66,
+      voltage_rms: 207.83,
+      timestamp: '2025-12-08 17:32:05'
+    },
+    {
+      id: 2,
+      humidity: 75.20,
+      temperature: 28.50,
+      mq135_ratio: 210,
+      mq7_ratio: 11.50,
+      voltage_rms: 205.40,
+      timestamp: '2025-12-08 17:02:05'
+    },
+    {
+      id: 3,
+      humidity: 76.80,
+      temperature: 29.00,
+      mq135_ratio: 215,
+      mq7_ratio: 12.00,
+      voltage_rms: 206.50,
+      timestamp: '2025-12-08 16:32:05'
+    }
+  ]);
 
   useEffect(() => {
     const sessionData = getUserSession();
@@ -58,15 +89,16 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="dashboard-content">
-        <div className="welcome-card">
-          <h2>Selamat Datang, {session?.username}! 🎉</h2>
-          <p>Anda berhasil login ke sistem monitoring kualitas udara IoT.</p>
-          <div className="session-info">
-            <p><strong>Waktu Login:</strong> {session?.loginTime ? new Date(session.loginTime).toLocaleString('id-ID') : '-'}</p>
-          </div>
+      <div> 
+        <div className="DHT-22">
+          <h1>Kelembapan Ruangan</h1>
+          <span></span>
+          <h1>Suhu Ruangan</h1>
         </div>
       </div>
+
+      {/* Tabel Data Sensor */}
+      <Table data={sensorData} />
 
       {/* Logout Confirmation Popup */}
       {showLogoutPopup && (

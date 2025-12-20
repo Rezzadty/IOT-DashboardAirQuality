@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getUserSession, logout } from '../auth/authHelper';
 import Table from '../../components/table/Table';
+import StatCard from '../../components/StatCard/StartCard';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -89,13 +90,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div> 
-        <div className="DHT-22">
-          <h1>Kelembapan Ruangan</h1>
-          <span></span>
-          <h1>Suhu Ruangan</h1>
-        </div>
-      </div>
+      {/* Statistics Cards */}
+      <StatCard data={sensorData} />
 
       {/* Tabel Data Sensor */}
       <Table data={sensorData} />

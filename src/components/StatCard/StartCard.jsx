@@ -1,9 +1,97 @@
-import React from 'react'
+import React from 'react';
+import './StatCard.css';
 
-function StartCard() {
+function StatCard({ data }) {
+  // Konfigurasi untuk setiap card
+  const cardConfigs = [
+    {
+      title: 'Kelembapan Ruangan',
+      key: 'humidity',
+      unit: '%',
+      label: 'DHT22',
+      color: '#00b4d8',
+      description: 'Sensor DHT22 Mendeteksi kelembapan ruangan',
+      decimals: 2
+    },
+    {
+      title: 'Suhu Ruangan',
+      key: 'temperature',
+      unit: '°C',
+      label: 'DHT22',
+      color: '#ff6b6b',
+      description: 'Sensor DHT22 Mendeteksi suhu ruangan',
+      decimals: 2
+    },
+    {
+      title: 'Gas MQ135',
+      key: 'mq135_ratio',
+      unit: 'PPM',
+      label: 'MQ135',
+      color: '#9b59b6',
+      description: 'Sensor MQ135 Mendeteksi kualitas udara dan gas berbahaya',
+      decimals: 0
+    },
+    {
+      title: 'Gas MQ7',
+      key: 'mq7_ratio',
+      unit: 'PPM',
+      label: 'MQ7',
+      color: '#f39c12',
+      description: 'Sensor MQ7 Mendeteksi Karbon Monoksida',
+      decimals: 2
+    },
+    {
+      title: 'Tegangan RMS',
+      key: 'voltage_rms',
+      unit: 'V',
+      label: 'ZMPT',
+      color: '#2ecc71',
+      description: 'Sensor ZMPT101B Memantau Tegangan Listrik AC',
+      decimals: 2
+    }
+  ];
+
+  // Ambil data terbaru (index 0) atau gunakan data dummy jika tidak ada
+  const latestData = data && data.length > 0 ? data[0] : {
+    humidity: 0,
+    temperature: 0,
+    mq135_ratio: 0,
+    mq7_ratio: 0,
+    voltage_rms: 0
+  };
+
   return (
-    <div>StartCard</div>
-  )
+    <div className="stats-container">
+      {cardConfigs.map((config, index) => {
+        const value = latestData[config.key] || 0;
+        const displayValue = config.decimals > 0 
+          ? Number(value).toFixed(config.decimals) 
+          : value;
+
+        return (
+          <div key={index} className="stat-card" style={{ borderColor: config.color }}>
+            <div className="stat-card-header">
+              <div className="stat-card-icon" style={{ backgroundColor: config.color }}>
+                {config.label}
+              </div>
+              <h3 className="stat-card-title">{config.title}</h3>
+            </div>
+            <div className="stat-card-body">
+              <div className="stat-card-value">
+                <span className="value-number" style={{ color: config.color }}>
+                  {displayValue}
+                </span>
+                <span className="value-unit">{config.unit}</span>
+              </div>
+              {config.description && (
+                <p className="stat-card-description">{config.description}</p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
-export default StartCard
+export default StatCard;

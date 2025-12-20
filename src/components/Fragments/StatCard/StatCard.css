@@ -55,6 +55,9 @@
   font-weight: 700;
   color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+  text-align: center;
+  padding: 4px;
 }
 
 .stat-card-title {
@@ -112,7 +115,7 @@
   .stat-card-icon {
     width: 40px;
     height: 40px;
-    font-size: 20px;
+    font-size: 9px;
   }
 
   .stat-card-title {
@@ -126,6 +129,10 @@
   .value-unit {
     font-size: 16px;
   }
+  
+  .stat-card-description {
+    font-size: 12px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -134,12 +141,66 @@
     gap: 16px;
     padding: 20px;
   }
+  
+  .stat-card {
+    padding: 18px;
+  }
+  
+  .stat-card-header {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .stat-card-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 8px;
+    border-radius: 6px;
+  }
+  
+  .stat-card-title {
+    font-size: 13px;
+  }
+  
+  .value-number {
+    font-size: 26px;
+  }
+  
+  .value-unit {
+    font-size: 15px;
+  }
+  
+  .stat-card-description {
+    font-size: 11px;
+  }
 }
 
 @media (max-width: 480px) {
+  .stats-container {
+    padding: 16px;
+    gap: 12px;
+  }
+  
   .stat-card {
     padding: 16px;
     min-width: 100%;
+  }
+  
+  .stat-card-header {
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  
+  .stat-card-icon {
+    width: 32px;
+    height: 32px;
+    font-size: 7px;
+    border-radius: 5px;
+    padding: 2px;
+  }
+  
+  .stat-card-title {
+    font-size: 12px;
   }
 
   .value-number {
@@ -148,5 +209,9 @@
 
   .value-unit {
     font-size: 14px;
+  }
+  
+  .stat-card-description {
+    font-size: 10px;
   }
 }

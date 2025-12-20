@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getUserSession, logout } from '../auth/authHelper';
-import Table from '../../components/table/Table';
+import Table from '../../components/Fragments/table/Table';
 import StatCard from '../../components/StatCard/StartCard';
 import './Dashboard.css';
 

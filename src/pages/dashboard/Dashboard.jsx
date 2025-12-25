@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { getUserSession, logout } from '../auth/authHelper';
+import Header from '../../components/Fragments/header/Header';
 import Table from '../../components/Fragments/table/Table';
-import StatCard from '../../components/StatCard/StartCard';
+import StatCard from '../../components/Fragments/statCard/StatCard';
+import Footer from '../../components/Fragments/footer/Footer';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -80,21 +82,16 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
-        <h1>Dashboard Monitoring Kualitas Udara</h1>
-        <div className="user-info">
-          <span>👤 {session?.username || 'User'}</span>
-          <button onClick={handleLogoutClick} className="logout-btn">
-            Keluar
-          </button>
-        </div>
-      </div>
+      <Header username={session?.username} onLogout={handleLogoutClick} />
 
       {/* Statistics Cards */}
       <StatCard data={sensorData} />
 
       {/* Tabel Data Sensor */}
       <Table data={sensorData} />
+
+      {/* Footer */}
+      <Footer />
 
       {/* Logout Confirmation Popup */}
       {showLogoutPopup && (

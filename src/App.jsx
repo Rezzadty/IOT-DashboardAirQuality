@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import Login from './pages/auth/login/login.jsx'
 import Dashboard from './pages/dashboard/Dashboard.jsx'
-import { isAuthenticated } from './pages/auth/authHelper'
-import './App.css'
+import { isAuthenticated } from './utils/authHelper'
+import './styles/App.css'
 
 function App() {
   const [currentPage, setCurrentPage] = useState('login')

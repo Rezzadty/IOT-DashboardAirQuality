@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { getUserSession, logout } from '../auth/authHelper';
-import { database, ref, onValue, query, orderByChild, limitToLast } from '../../config/firebase';
-import Header from '../../components/Fragments/header/Header';
-import Table from '../../components/Fragments/table/Table';
-import StatCard from '../../components/Fragments/statCard/StatCard';
-import Footer from '../../components/Fragments/footer/Footer';
+import { getUserSession, logout } from '../../utils/authHelper';
+import { database, ref, onValue, query, orderByChild, limitToLast } from '../../services/firebase';
+import Header from '../../components/layout/Header/Header';
+import Table from '../../components/common/Table/Table';
+import StatCard from '../../components/common/StatCard/StatCard';
+import Footer from '../../components/layout/Footer/Footer';
 import './Dashboard.css';
 
 const Dashboard = () => {

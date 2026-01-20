@@ -5,6 +5,7 @@ import { useSensorData } from '../../utils/useSensorData';
 import Header from '../../components/layout/Header/Header';
 import Table from '../../components/common/Table/Table';
 import StatCard from '../../components/common/StatCard/StatCard';
+import SensorChart from '../../components/common/SensorChart/SensorChart';
 import Footer from '../../components/layout/Footer/Footer';
 import Toast from '../../components/common/Toast/Toast';
 import LoadingState from '../../components/common/LoadingState/LoadingState';
@@ -106,6 +107,9 @@ const Dashboard = () => {
 
       {/* Statistics Cards - menggunakan data terbaru */}
       <StatCard data={latestData ? [latestData] : []} />
+
+      {/* Grafik Tren Data Sensor */}
+      <SensorChart data={sensorData} />
 
       {/* Tabel Data Sensor - menggunakan riwayat data */}
       <Table data={sensorData} />

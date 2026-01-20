@@ -1,4 +1,6 @@
 import React from 'react';
+import { getAirQualityStatus } from '../../../utils/deviceStatus';
+import AirQualityBadge from '../AirQualityBadge/AirQualityBadge';
 import './StatCard.css';
 
 function StatCard({ data }) {
@@ -10,7 +12,7 @@ function StatCard({ data }) {
       unit: '%',
       label: 'DHT22',
       color: '#00b4d8',
-      description: 'Sensor DHT22 Mendeteksi kelembapan ruangan',
+      description: 'Mendeteksi kelembapan ruangan',
       decimals: 2
     },
     {
@@ -19,7 +21,7 @@ function StatCard({ data }) {
       unit: '°C',
       label: 'DHT22',
       color: '#ff6b6b',
-      description: 'Sensor DHT22 Mendeteksi suhu ruangan',
+      description: 'Mendeteksi suhu ruangan',
       decimals: 2
     },
     {
@@ -28,7 +30,7 @@ function StatCard({ data }) {
       unit: 'PPM',
       label: 'MQ135',
       color: '#9b59b6',
-      description: 'Sensor MQ135 Mendeteksi kualitas udara dan gas berbahaya',
+      description: 'Mendeteksi kualitas udara dan gas berbahaya',
       decimals: 0
     },
     {
@@ -37,7 +39,7 @@ function StatCard({ data }) {
       unit: 'PPM',
       label: 'MQ7',
       color: '#f39c12',
-      description: 'Sensor MQ7 Mendeteksi Karbon Monoksida',
+      description: 'Mendeteksi Karbon Monoksida',
       decimals: 2
     },
     {
@@ -46,7 +48,7 @@ function StatCard({ data }) {
       unit: 'V',
       label: 'ZMPT',
       color: '#2ecc71',
-      description: 'Sensor ZMPT101B Memantau Tegangan Listrik AC',
+      description: 'Memantau Tegangan Listrik AC',
       decimals: 2
     }
   ];
@@ -60,6 +62,12 @@ function StatCard({ data }) {
     voltage_rms: 0
   };
 
+  // Hitung status kualitas udara berdasarkan MQ135 dan MQ7
+  const airQualityStatus = getAirQualityStatus(
+    latestData.mq135_ratio, 
+    latestData.mq7_ratio
+  );
+
   return (
     <div className="stats-container">
       {cardConfigs.map((config, index) => {
@@ -67,6 +75,9 @@ function StatCard({ data }) {
         const displayValue = config.decimals > 0 
           ? Number(value).toFixed(config.decimals) 
           : value;
+
+        // Tampilkan badge kualitas udara untuk MQ135 dan MQ7
+        const showAirQualityBadge = config.key === 'mq135_ratio' || config.key === 'mq7_ratio';
 
         return (
           <div key={index} className="stat-card" style={{ borderColor: config.color }}>
@@ -85,6 +96,14 @@ function StatCard({ data }) {
               </div>
               {config.description && (
                 <p className="stat-card-description">{config.description}</p>
+              )}
+              {showAirQualityBadge && (
+                <AirQualityBadge 
+                  level={airQualityStatus.level}
+                  text={airQualityStatus.text}
+                  icon={airQualityStatus.icon}
+                  color={airQualityStatus.color}
+                />
               )}
             </div>
           </div>

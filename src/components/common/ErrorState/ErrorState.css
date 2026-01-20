@@ -1,0 +1,56 @@
+.error-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+}
+
+.error-content {
+  text-align: center;
+  max-width: 600px;
+  padding: 0 20px;
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+  animation: shake 0.5s ease-in-out;
+}
+
+.error-message {
+  color: #ff6b6b;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+
+.error-hint {
+  font-size: 14px;
+  color: #aaa;
+  margin-top: 10px;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .error-state {
+    min-height: 40vh;
+  }
+
+  .error-icon {
+    font-size: 36px;
+  }
+
+  .error-message {
+    font-size: 16px;
+  }
+
+  .error-hint {
+    font-size: 13px;
+  }
+}

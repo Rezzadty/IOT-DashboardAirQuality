@@ -1,96 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { getUserSession, logout } from '../../utils/authHelper';
-import { database, ref, onValue, query, orderByChild, limitToLast } from '../../services/firebase';
+import { useToast } from '../../utils/useToast';
+import { useSensorData } from '../../utils/useSensorData';
 import Header from '../../components/layout/Header/Header';
 import Table from '../../components/common/Table/Table';
 import StatCard from '../../components/common/StatCard/StatCard';
 import Footer from '../../components/layout/Footer/Footer';
+import Toast from '../../components/common/Toast/Toast';
+import LoadingState from '../../components/common/LoadingState/LoadingState';
+import ErrorState from '../../components/common/ErrorState/ErrorState';
 import './Dashboard.css';
 
 const Dashboard = () => {
   const [session, setSession] = useState(null);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
-  const [sensorData, setSensorData] = useState([]);
-  const [latestData, setLatestData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  
+  const { toasts, showSuccess, showError, showWarning, hideToast } = useToast();
+  
+  // Fetch sensor data menggunakan custom hook
+  const { latestData, sensorData, deviceStatus, loading, error } = useSensorData({
+    showSuccess,
+    showError,
+    showWarning
+  });
 
   useEffect(() => {
     const sessionData = getUserSession();
     if (sessionData) {
       setSession(sessionData);
     }
-
-    // Fetch data terbaru dari Firebase (latest)
-    const latestRef = ref(database, 'SensorData/latest');
-    const unsubscribeLatest = onValue(latestRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        console.log('Latest data received:', data);
-        setLatestData({
-          humidity: data.humidity || 0,
-          temperature: data.temperature || 0,
-          mq135_ratio: data.mq135_ratio || 0,
-          mq7_ratio: data.mq7_ratio || 0,
-          voltage_rms: data.voltage_rms || 0,
-          timestamp: data.timestamp || new Date().toISOString(),
-          device_status: data.device_status || 'offline',
-          mq135_status: data.mq135_status || 'Unknown',
-          mq7_status: data.mq7_status || 'Unknown',
-          mq135_voltage: data.mq135_voltage || 0,
-          mq7_voltage: data.mq7_voltage || 0
-        });
-      }
-    }, (error) => {
-      console.error('Error fetching latest data:', error);
-      setError(`Permission Error: Periksa Firebase Rules. Error: ${error.message}`);
-    });
-
-    // Fetch riwayat data dari Firebase (untuk tabel)
-    // Ambil 100 data terakhir, diurutkan berdasarkan timestamp
-    const historyRef = query(
-      ref(database, 'SensorData/history'),
-      orderByChild('timestamp'),
-      limitToLast(100)
-    );
-
-    const unsubscribeHistory = onValue(historyRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const dataArray = Object.keys(data).map((key, index) => ({
-          id: index + 1,
-          humidity: data[key].humidity || 0,
-          temperature: data[key].temperature || 0,
-          mq135_ratio: data[key].mq135_ratio || 0,
-          mq7_ratio: data[key].mq7_ratio || 0,
-          voltage_rms: data[key].voltage_rms || 0,
-          timestamp: data[key].timestamp || '',
-          device_status: data[key].device_status || 'offline',
-          mq135_status: data[key].mq135_status || 'Unknown',
-          mq7_status: data[key].mq7_status || 'Unknown'
-        }));
-        
-        // Urutkan dari yang terbaru ke terlama
-        const sortedData = dataArray.sort((a, b) => 
-          new Date(b.timestamp) - new Date(a.timestamp)
-        );
-        
-        setSensorData(sortedData);
-      } else {
-        setSensorData([]);
-      }
-      setLoading(false);
-    }, (error) => {
-      console.error('Error fetching history data:', error);
-      setError('Gagal mengambil riwayat data dari Firebase');
-      setLoading(false);
-    });
-
-    // Cleanup subscriptions saat component unmount
-    return () => {
-      unsubscribeLatest();
-      unsubscribeHistory();
-    };
   }, []);
 
   const handleLogoutClick = () => {
@@ -131,20 +69,7 @@ const Dashboard = () => {
     return (
       <div className="dashboard-container">
         <Header username={session?.username} onLogout={handleLogoutClick} />
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '50vh',
-          color: '#fff',
-          fontSize: '18px',
-          fontWeight: '500'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ marginBottom: '10px' }}>⏳</div>
-            <div>Memuat data dari Firebase...</div>
-          </div>
-        </div>
+        <LoadingState />
       </div>
     );
   }
@@ -154,30 +79,30 @@ const Dashboard = () => {
     return (
       <div className="dashboard-container">
         <Header username={session?.username} onLogout={handleLogoutClick} />
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          alignItems: 'center', 
-          minHeight: '50vh',
-          color: '#ff6b6b',
-          fontSize: '18px',
-          fontWeight: '500'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ marginBottom: '10px' }}>⚠️</div>
-            <div>{error}</div>
-            <div style={{ fontSize: '14px', marginTop: '10px', color: '#aaa' }}>
-              Pastikan konfigurasi Firebase sudah benar
-            </div>
-          </div>
-        </div>
+        <ErrorState error={error} />
       </div>
     );
   }
 
   return (
     <div className="dashboard-container">
-      <Header username={session?.username} onLogout={handleLogoutClick} />
+      <Header 
+        username={session?.username} 
+        onLogout={handleLogoutClick}
+        deviceStatus={deviceStatus}
+      />
+
+      {/* Toast Notifications */}
+      {toasts.map((toast) => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          persistent={toast.persistent}
+          onClose={() => hideToast(toast.id)}
+        />
+      ))}
 
       {/* Statistics Cards - menggunakan data terbaru */}
       <StatCard data={latestData ? [latestData] : []} />

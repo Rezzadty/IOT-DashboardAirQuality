@@ -1,7 +1,8 @@
 import React from 'react';
+import DeviceStatus from '../../common/DeviceStatus/DeviceStatus';
 import './Header.css';
 
-const Header = ({ username, onLogout }) => {
+const Header = ({ username, onLogout, deviceStatus }) => {
   return (
     <header className="header">
       <div className="header-container">
@@ -13,6 +14,13 @@ const Header = ({ username, onLogout }) => {
               <span className="subtitle">Dashboard Monitoring Kualitas Udara</span>
             </div>
           </div>
+          {deviceStatus && (
+            <DeviceStatus 
+              isOnline={deviceStatus.isOnline}
+              lastUpdate={deviceStatus.lastUpdate}
+              offlineMinutes={deviceStatus.offlineMinutes}
+            />
+          )}
         </div>
         
         <div className="header-right">

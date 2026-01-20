@@ -5,6 +5,33 @@ import './Table.css';
 
 const Table = ({ data }) => {
   const [isExporting, setIsExporting] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Hitung total halaman
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  // Hitung index data untuk halaman saat ini
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  // Fungsi untuk berpindah halaman
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   const handleExportPDF = () => {
     try {
@@ -126,9 +153,9 @@ const Table = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
+            {currentData.map((item, index) => (
               <tr key={item.id}>
-                <td>{index + 1}</td>
+                <td>{indexOfFirstItem + index + 1}</td>
                 <td>{item.humidity}</td>
                 <td>{item.temperature}</td>
                 <td>{item.mq135_ratio}</td>
@@ -139,6 +166,39 @@ const Table = ({ data }) => {
             ))}
           </tbody>
         </table>
+        
+        {/* Pagination Controls */}
+        {data.length > 0 && (
+          <div className="pagination">
+            <button 
+              className="pagination-btn" 
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            
+            <div className="pagination-numbers">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
+                <button
+                  key={pageNumber}
+                  className={`pagination-number ${currentPage === pageNumber ? 'active' : ''}`}
+                  onClick={() => handlePageChange(pageNumber)}
+                >
+                  {pageNumber}
+                </button>
+              ))}
+            </div>
+            
+            <button 
+              className="pagination-btn" 
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

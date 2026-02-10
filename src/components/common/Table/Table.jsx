@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import './Table.css';
 
 const Table = ({ data }) => {
@@ -17,10 +17,6 @@ const Table = ({ data }) => {
   const currentData = data.slice(indexOfFirstItem, indexOfLastItem);
 
   // Fungsi untuk berpindah halaman
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
@@ -71,7 +67,7 @@ const Table = ({ data }) => {
       console.log('Table data untuk PDF:', tableData);
       
       // Generate tabel dengan autoTable
-      doc.autoTable({
+      autoTable(doc, {
         head: [[
           'No',
           'Humidity (%)',
@@ -177,18 +173,6 @@ const Table = ({ data }) => {
             >
               Previous
             </button>
-            
-            <div className="pagination-numbers">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-                <button
-                  key={pageNumber}
-                  className={`pagination-number ${currentPage === pageNumber ? 'active' : ''}`}
-                  onClick={() => handlePageChange(pageNumber)}
-                >
-                  {pageNumber}
-                </button>
-              ))}
-            </div>
             
             <button 
               className="pagination-btn" 

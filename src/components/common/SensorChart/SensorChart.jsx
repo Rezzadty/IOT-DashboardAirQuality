@@ -39,6 +39,14 @@ export default function SensorChart({ data }) {
   const getChartOptions = (label) => ({
     responsive: true,
     maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    hover: {
+      mode: 'index',
+      intersect: false,
+    },
     plugins: {
       legend: {
         display: true,
@@ -60,16 +68,37 @@ export default function SensorChart({ data }) {
         display: false,
       },
       tooltip: {
+        enabled: true,
         backgroundColor: 'rgba(26, 47, 71, 0.95)',
-        padding: 12,
+        padding: 16,
         titleColor: '#fff',
-        bodyColor: '#94a3b8',
-        borderColor: '#334155',
-        borderWidth: 1,
+        titleFont: {
+          size: 14,
+          weight: 'bold',
+        },
+        bodyColor: '#e2e8f0',
+        bodyFont: {
+          size: 13,
+        },
+        bodySpacing: 6,
+        borderColor: '#00b4d8',
+        borderWidth: 2,
         displayColors: true,
+        boxWidth: 10,
+        boxHeight: 10,
+        usePointStyle: true,
+        cornerRadius: 8,
+        caretSize: 8,
         callbacks: {
+          title: function(tooltipItems) {
+            const index = tooltipItems[0].dataIndex;
+            const totalPoints = tooltipItems[0].dataset.data.length;
+            if (index === 0) return 'Data Terlama';
+            if (index === totalPoints - 1) return 'Data Terbaru';
+            return `Data ke-${index + 1}`;
+          },
           label: function(context) {
-            return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}`;
+            return ` ${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
           }
         }
       }
@@ -112,10 +141,12 @@ export default function SensorChart({ data }) {
         tension: 0.4,
       },
       point: {
-        radius: 4,
-        hoverRadius: 6,
+        radius: 5,
+        hoverRadius: 8,
         borderWidth: 2,
         backgroundColor: '#1a2f47',
+        hitRadius: 30,
+        hoverBorderWidth: 3,
       }
     }
   });
@@ -139,6 +170,10 @@ export default function SensorChart({ data }) {
         pointBorderColor: '#1a2f47',
         pointHoverBackgroundColor: dataset.color,
         pointHoverBorderColor: '#fff',
+        pointRadius: 5,
+        pointHoverRadius: 8,
+        pointHitRadius: 30,
+        pointHoverBorderWidth: 3,
       })),
     };
 

@@ -12,7 +12,7 @@ const Footer = () => {
             &copy; {currentYear} Dashboard Monitoring Kualitas Udara. All Rights Reserved.
           </p>
           <p className="footer-subtext">
-            Developed by Rezzadty for Environmental Monitoring | Version 1.0
+            Developed by Rezzadty | Version 1.0
           </p>
         </div>
       </div>

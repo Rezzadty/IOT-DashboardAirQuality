@@ -1,3 +1,10 @@
+.sensor-chart-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
 .sensor-chart-container {
   background: linear-gradient(135deg, rgba(26, 47, 71, 0.95) 0%, rgba(13, 27, 42, 0.95) 100%);
   border-radius: 12px;
@@ -7,140 +14,77 @@
   width: 100%;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(100, 200, 255, 0.2);
+  animation: fadeIn 0.5s ease-in;
 }
 
-.chart-header {
-  margin-bottom: 20px;
+.no-data-text {
+  color: #ccc;
+  text-align: center;
+  font-size: 1rem;
+  padding: 2.5rem 0;
+}
+
+.chart-card {
+  background-color: #1a2f47;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.5s ease-in;
+  border: 1px solid rgba(100, 200, 255, 0.1);
 }
 
 .chart-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-  margin: 0 0 8px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.chart-subtitle {
-  font-size: 14px;
-  color: rgba(100, 200, 255, 0.8);
-  margin: 0;
-}
-
-.chart-wrapper {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  padding: 20px 10px;
-}
-
-.chart-no-data {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
-  color: #aaa;
-  font-size: 16px;
-}
-
-/* Custom Tooltip Styling */
-.custom-tooltip {
-  background: rgba(13, 27, 42, 0.98);
-  border: 1px solid rgba(100, 200, 255, 0.3);
-  border-radius: 8px;
-  padding: 12px 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(10px);
-}
-
-.tooltip-time {
-  font-size: 13px;
+  font-size: 1.125rem;
   font-weight: 600;
   color: #fff;
-  margin: 0 0 8px 0;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+  margin-bottom: 1rem;
 }
 
-.tooltip-item {
-  font-size: 12px;
-  margin: 4px 0;
-  font-weight: 500;
+.chart-container {
+  height: 280px;
+  padding: 0.75rem 0;
 }
 
-/* Recharts Legend Styling */
-.recharts-legend-wrapper {
-  padding-top: 15px !important;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.recharts-legend-item {
-  margin-right: 20px !important;
-}
-
-.recharts-legend-item-text {
-  color: #ddd !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
-}
-
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-  .sensor-chart-container {
-    padding: 16px;
-    margin: 20px auto;
-    max-width: 100%;
+  .sensor-chart-wrapper {
+    gap: 1rem;
+  }
+
+  .chart-card {
+    padding: 1rem;
   }
 
   .chart-title {
-    font-size: 18px;
+    font-size: 1rem;
   }
 
-  .chart-subtitle {
-    font-size: 12px;
-  }
-
-  .chart-wrapper {
-    padding: 15px 5px;
-  }
-
-  .custom-tooltip {
-    padding: 10px 12px;
-  }
-
-  .tooltip-time {
-    font-size: 12px;
-  }
-
-  .tooltip-item {
-    font-size: 11px;
+  .chart-container {
+    height: 260px;
   }
 }
 
 @media (max-width: 480px) {
-  .sensor-chart-container {
-    padding: 12px;
-    margin: 15px auto;
-    max-width: 100%;
+  .sensor-chart-wrapper {
+    gap: 1rem;
   }
 
-  .chart-title {
-    font-size: 16px;
+  .chart-card {
+    padding: 0.875rem;
   }
 
-  .chart-subtitle {
-    font-size: 11px;
-  }
-
-  .chart-wrapper {
-    padding: 10px 0;
-  }
-
-  .recharts-legend-item {
-    margin-right: 10px !important;
-  }
-
-  .recharts-legend-item-text {
-    font-size: 11px !important;
+  .chart-container {
+    height: 240px;
   }
 }

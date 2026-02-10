@@ -1,168 +1,173 @@
-import React, { useMemo } from 'react';
+import { Line } from 'react-chartjs-2';
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
   Tooltip,
   Legend,
-  ResponsiveContainer
-} from 'recharts';
+  Filler
+} from 'chart.js';
 import './SensorChart.css';
 
-const SensorChart = ({ data, title = 'Grafik Data Sensor' }) => {
-  // Format data untuk chart
-  const chartData = useMemo(() => {
-    if (!data || data.length === 0) return [];
+// Register ChartJS components
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler
+);
 
-    // Ambil 20 data terakhir untuk grafik yang tidak terlalu padat
-    const limitedData = data.slice(0, 20).reverse();
-
-    return limitedData.map((item, index) => {
-      // Format timestamp ke waktu yang lebih readable
-      const date = new Date(item.timestamp);
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const time = `${hours}:${minutes}`;
-
-      return {
-        time,
-        humidity: Number(item.humidity).toFixed(1),
-        temperature: Number(item.temperature).toFixed(1),
-        mq135: Number(item.mq135_ratio).toFixed(1),
-        mq7: Number(item.mq7_ratio).toFixed(1),
-        voltage: Number(item.voltage_rms).toFixed(1)
-      };
-    });
-  }, [data]);
-
-  // Custom tooltip
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="custom-tooltip">
-          <p className="tooltip-time">{`Waktu: ${payload[0].payload.time}`}</p>
-          {payload.map((entry, index) => (
-            <p key={index} className="tooltip-item" style={{ color: entry.color }}>
-              {`${entry.name}: ${entry.value}${getUnit(entry.dataKey)}`}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Get unit for each sensor
-  const getUnit = (dataKey) => {
-    switch (dataKey) {
-      case 'humidity':
-        return ' %';
-      case 'temperature':
-        return ' °C';
-      case 'mq135':
-      case 'mq7':
-        return ' PPM';
-      case 'voltage':
-        return ' V';
-      default:
-        return '';
-    }
-  };
-
+export default function SensorChart({ data }) {
   if (!data || data.length === 0) {
     return (
       <div className="sensor-chart-container">
-        <div className="chart-header">
-          <h2 className="chart-title">{title}</h2>
-          <p className="chart-subtitle">Data 30 Menit Terakhir</p>
-        </div>
-        <div className="chart-no-data">
-          <p>Tidak ada data untuk ditampilkan</p>
-        </div>
+        <div className="no-data-text">Tidak ada data untuk ditampilkan</div>
       </div>
     );
   }
 
+  const chartData = data.slice(0, 10).reverse();
+
+  // Chart options configuration
+  const getChartOptions = (label) => ({
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        labels: {
+          color: '#94a3b8',
+          font: {
+            size: 13,
+            weight: '500',
+          },
+          padding: 15,
+          usePointStyle: true,
+          pointStyle: 'rectRounded',
+          boxWidth: 15,
+          boxHeight: 15,
+        }
+      },
+      title: {
+        display: false,
+      },
+      tooltip: {
+        backgroundColor: 'rgba(26, 47, 71, 0.95)',
+        padding: 12,
+        titleColor: '#fff',
+        bodyColor: '#94a3b8',
+        borderColor: '#334155',
+        borderWidth: 1,
+        displayColors: true,
+        callbacks: {
+          label: function(context) {
+            return `${context.dataset.label}: ${context.parsed.y.toFixed(1)}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          color: '#334155',
+          borderDash: [4, 4],
+          drawBorder: false,
+        },
+        ticks: {
+          color: '#94a3b8',
+          font: {
+            size: 11,
+          },
+          maxRotation: 0,
+          autoSkip: true,
+        }
+      },
+      y: {
+        grid: {
+          color: '#334155',
+          borderDash: [4, 4],
+          drawBorder: false,
+        },
+        ticks: {
+          color: '#94a3b8',
+          font: {
+            size: 11,
+          },
+          callback: function(value) {
+            return value.toFixed(1);
+          }
+        }
+      }
+    },
+    elements: {
+      line: {
+        tension: 0.4,
+      },
+      point: {
+        radius: 4,
+        hoverRadius: 6,
+        borderWidth: 2,
+        backgroundColor: '#1a2f47',
+      }
+    }
+  });
+
+  // Render chart with multiple datasets
+  const renderMultiChart = (datasets, title) => {
+    const labels = datasets[0].values.map((_, index) => 
+      index === 0 ? 'Start' : index === datasets[0].values.length - 1 ? 'Latest' : ''
+    );
+
+    const chartDataset = {
+      labels,
+      datasets: datasets.map(dataset => ({
+        label: dataset.label,
+        data: dataset.values,
+        borderColor: dataset.color,
+        backgroundColor: dataset.color,
+        borderWidth: 3,
+        fill: false,
+        pointBackgroundColor: dataset.color,
+        pointBorderColor: '#1a2f47',
+        pointHoverBackgroundColor: dataset.color,
+        pointHoverBorderColor: '#fff',
+      })),
+    };
+
+    return (
+      <div className="chart-card">
+        <h3 className="chart-title">{title}</h3>
+        <div className="chart-container">
+          <Line data={chartDataset} options={getChartOptions(title)} />
+        </div>
+      </div>
+    );
+  };
+
+  const temperatureValues = chartData.map((item) => parseFloat(item.temperature));
+  const humidityValues = chartData.map((item) => parseFloat(item.humidity));
+  const mq135Values = chartData.map((item) => parseFloat(item.mq135_ratio));
+  const mq7Values = chartData.map((item) => parseFloat(item.mq7_ratio));
+
   return (
-    <div className="sensor-chart-container">
-      <div className="chart-header">
-        <h2 className="chart-title">{title}</h2>
-        <p className="chart-subtitle">Data 30 Menit Terakhir ({chartData.length} Data Point)</p>
-      </div>
+    <div className="sensor-chart-wrapper">
+      {renderMultiChart([
+        { label: 'Suhu (°C)', values: temperatureValues, color: '#ff6b6b' },
+        { label: 'Kelembapan (%)', values: humidityValues, color: '#00b4d8' }
+      ], "Data Suhu & Kelembapan")}
       
-      <div className="chart-wrapper">
-        <ResponsiveContainer width="100%" height={450}>
-          <LineChart
-            data={chartData}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
-            <XAxis
-              dataKey="time"
-              stroke="#aaa"
-              style={{ fontSize: '12px' }}
-            />
-            <YAxis
-              stroke="#aaa"
-              style={{ fontSize: '12px' }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              wrapperStyle={{ paddingTop: '20px' }}
-              iconType="line"
-            />
-            <Line
-              type="monotone"
-              dataKey="humidity"
-              name="Kelembapan"
-              stroke="#00b4d8"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 5 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="temperature"
-              name="Suhu"
-              stroke="#ff6b6b"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 5 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="mq135"
-              name="Gas MQ135"
-              stroke="#9b59b6"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 5 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="mq7"
-              name="Gas MQ7"
-              stroke="#f39c12"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 5 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="voltage"
-              name="Tegangan RMS"
-              stroke="#2ecc71"
-              strokeWidth={2}
-              dot={{ r: 3 }}
-              activeDot={{ r: 5 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+      {renderMultiChart([
+        { label: 'Sensor Gas MQ-135 (PPM)', values: mq135Values, color: '#9b59b6' },
+        { label: 'Sensor Gas MQ-7 (PPM)', values: mq7Values, color: '#e74c3c' }
+      ], "Data Sensor Gas MQ-135 & MQ-7")}
     </div>
   );
-};
-
-export default SensorChart;
+}

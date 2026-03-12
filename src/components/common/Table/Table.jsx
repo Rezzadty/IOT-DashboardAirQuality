@@ -60,7 +60,6 @@ const Table = ({ data }) => {
         item.temperature,
         item.mq135_ratio,
         item.mq7_ratio,
-        item.voltage_rms,
         item.timestamp
       ]);
       
@@ -74,7 +73,6 @@ const Table = ({ data }) => {
           'Temperature (°C)',
           'MQ-135 Ratio',
           'MQ-7 Ratio',
-          'Voltage RMS (V)',
           'Tanggal'
         ]],
         body: tableData,
@@ -99,8 +97,7 @@ const Table = ({ data }) => {
           2: { halign: 'center' },
           3: { halign: 'center' },
           4: { halign: 'center' },
-          5: { halign: 'center' },
-          6: { halign: 'center' }
+          5: { halign: 'center' }
         }
       });
       
@@ -144,7 +141,6 @@ const Table = ({ data }) => {
               <th>Temperature (°C)</th>
               <th>MQ-135 Ratio</th>
               <th>MQ-7 Ratio</th>
-              <th>Voltage RMS (V)</th>
               <th>Tanggal</th>
             </tr>
           </thead>
@@ -156,7 +152,6 @@ const Table = ({ data }) => {
                 <td>{item.temperature}</td>
                 <td>{item.mq135_ratio}</td>
                 <td>{item.mq7_ratio}</td>
-                <td>{item.voltage_rms}</td>
                 <td>{item.timestamp}</td>
               </tr>
             ))}

@@ -41,15 +41,6 @@ function StatCard({ data }) {
       color: '#f39c12',
       description: 'Mendeteksi Karbon Monoksida',
       decimals: 2
-    },
-    {
-      title: 'Tegangan RMS',
-      key: 'voltage_rms',
-      unit: 'V',
-      label: 'ZMPT',
-      color: '#2ecc71',
-      description: 'Memantau Tegangan Listrik AC',
-      decimals: 2
     }
   ];
 
@@ -58,8 +49,7 @@ function StatCard({ data }) {
     humidity: 0,
     temperature: 0,
     mq135_ratio: 0,
-    mq7_ratio: 0,
-    voltage_rms: 0
+    mq7_ratio: 0
   };
 
   // Hitung status kualitas udara berdasarkan MQ135 dan MQ7

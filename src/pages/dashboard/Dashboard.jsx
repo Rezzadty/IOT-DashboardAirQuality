@@ -69,7 +69,7 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-container">
-        <Header username={session?.username} onLogout={handleLogoutClick} />
+        <Header username="Admin" onLogout={handleLogoutClick} />
         <LoadingState />
       </div>
     );
@@ -79,7 +79,7 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="dashboard-container">
-        <Header username={session?.username} onLogout={handleLogoutClick} />
+        <Header username="Admin" onLogout={handleLogoutClick} />
         <ErrorState error={error} />
       </div>
     );
@@ -87,8 +87,8 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <Header 
-        username={session?.username} 
+      <Header
+        username="Admin"
         onLogout={handleLogoutClick}
         deviceStatus={deviceStatus}
       />

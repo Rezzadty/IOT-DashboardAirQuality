@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getDatabase, ref, onValue, query, orderByChild, limitToLast } from 'firebase/database';
+import { getAuth } from 'firebase/auth';
 
 // Konfigurasi Firebase menggunakan environment variables
 const firebaseConfig = {
@@ -20,5 +21,6 @@ if (!firebaseConfig.apiKey) {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth(app);
 
-export { database, ref, onValue, query, orderByChild, limitToLast };
+export { database, ref, onValue, query, orderByChild, limitToLast, auth };

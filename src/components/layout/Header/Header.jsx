@@ -26,7 +26,7 @@ const Header = ({ username, onLogout, deviceStatus }) => {
         <div className="header-right">
           <div className="user-profile">
             <div className="user-avatar">👤</div>
-            <span className="username">{username || 'User'}</span>
+            <span className="username">{username || 'Admin'}</span>
           </div>
           <button onClick={onLogout} className="logout-button">
             <span className="logout-icon">🚪</span>

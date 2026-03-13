@@ -1,90 +1,91 @@
 import React, { useState } from 'react';
-import CryptoJS from 'crypto-js';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../../services/firebase';
 import './login.css';
 
 const Login = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  // Secret key untuk enkripsi (idealnya dari environment variable)
-  const SECRET_KEY = import.meta.env.VITE_SECRET_KEY || 'iot-dashboard-secret-key-2025';
-
-  // Kredensial terenkripsi
-  const encryptedCredentials = {
-    username: CryptoJS.AES.encrypt('admin', SECRET_KEY).toString(),
-    password: CryptoJS.AES.encrypt('password123', SECRET_KEY).toString()
-  };
-
-  // Fungsi untuk dekripsi data
-  const decryptData = (encryptedData) => {
-    try {
-      const bytes = CryptoJS.AES.decrypt(encryptedData, SECRET_KEY);
-      return bytes.toString(CryptoJS.enc.Utf8);
-    } catch (error) {
-      console.error('Dekripsi gagal:', error);
-      return null;
+  // Fungsi untuk mendapatkan pesan error yang ramah pengguna
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case 'auth/invalid-email':
+        return 'Format email tidak valid';
+      case 'auth/user-disabled':
+        return 'Akun ini telah dinonaktifkan';
+      case 'auth/user-not-found':
+        return 'Email atau password salah';
+      case 'auth/wrong-password':
+        return 'Email atau password salah';
+      case 'auth/invalid-credential':
+        return 'Email atau password salah';
+      case 'auth/too-many-requests':
+        return 'Terlalu banyak percobaan login. Coba lagi nanti';
+      case 'auth/network-request-failed':
+        return 'Koneksi internet bermasalah';
+      default:
+        return 'Terjadi kesalahan. Silakan coba lagi';
     }
   };
 
-  // Validasi kredensial
-  const validateCredentials = (inputUsername, inputPassword) => {
-    const decryptedUsername = decryptData(encryptedCredentials.username);
-    const decryptedPassword = decryptData(encryptedCredentials.password);
-
-    return inputUsername === decryptedUsername && inputPassword === decryptedPassword;
-  };
-
   // Handle submit form
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
     // Validasi input tidak kosong
-    if (!username.trim() || !password.trim()) {
-      setError('Username dan password harus diisi');
+    if (!email.trim() || !password.trim()) {
+      setError('Email dan password harus diisi');
       return;
     }
 
     setLoading(true);
 
-    // Simulasi delay untuk loading (opsional)
-    setTimeout(() => {
-      // Validasi kredensial
-      if (validateCredentials(username, password)) {
-        // Show success popup
-        setShowSuccessPopup(true);
-        
-        // Simpan status login di localStorage
-        const sessionData = {
-          isAuthenticated: true,
-          username: username,
-          loginTime: new Date().toISOString()
-        };
-        localStorage.setItem('userSession', JSON.stringify(sessionData));
-        
-        // Mulai transisi fade out setelah 1.2 detik
-        setTimeout(() => {
-          setIsTransitioning(true);
-        }, 1200);
-        
-        // Redirect ke dashboard setelah transisi selesai (total 2 detik)
-        setTimeout(() => {
-          window.location.href = '/dashboard';
-        }, 2000);
-      } else {
-        setError('Username atau password salah');
-        setLoading(false);
-      }
-    }, 500);
+    try {
+      // Login menggunakan Firebase Authentication
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      // Login berhasil
+      const user = userCredential.user;
+
+      // Show success popup
+      setShowSuccessPopup(true);
+
+      // Simpan status login di localStorage
+      const sessionData = {
+        isAuthenticated: true,
+        email: user.email,
+        uid: user.uid,
+        loginTime: new Date().toISOString()
+      };
+      localStorage.setItem('userSession', JSON.stringify(sessionData));
+
+      // Mulai transisi fade out setelah 1.2 detik
+      setTimeout(() => {
+        setIsTransitioning(true);
+      }, 1200);
+
+      // Redirect ke dashboard setelah transisi selesai (total 2 detik)
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 2000);
+
+    } catch (error) {
+      // Handle error
+      console.error('Login error:', error);
+      setError(getErrorMessage(error.code));
+      setLoading(false);
+    }
   };
 
   // Handle perubahan input
-  const handleUsernameChange = (e) => {
-    setUsername(e.target.value);
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
     if (error) setError(''); // Clear error saat user mengetik
   };
 
@@ -103,16 +104,16 @@ const Login = () => {
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Masukkan username"
-              value={username}
-              onChange={handleUsernameChange}
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Masukkan email"
+              value={email}
+              onChange={handleEmailChange}
               disabled={loading}
-              autoComplete="username"
+              autoComplete="email"
             />
           </div>
 
@@ -137,8 +138,8 @@ const Login = () => {
             </div>
           )}
 
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="login-button"
             disabled={loading}
           >

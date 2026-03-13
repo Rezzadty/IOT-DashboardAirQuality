@@ -1,7 +1,5 @@
-/**
- * Authentication Helper Functions
- * Fungsi-fungsi untuk mengelola autentikasi dan session
- */
+import { signOut } from 'firebase/auth';
+import { auth } from '../services/firebase';
 
 // Cek apakah user sudah login
 export const isAuthenticated = () => {
@@ -30,10 +28,18 @@ export const getUserSession = () => {
   }
 };
 
-// Logout user
-export const logout = () => {
-  localStorage.removeItem('userSession');
-  window.location.href = '/';
+// Logout user dengan Firebase Authentication
+export const logout = async () => {
+  try {
+    await signOut(auth);
+    localStorage.removeItem('userSession');
+    window.location.href = '/';
+  } catch (error) {
+    console.error('Logout error:', error);
+    // Tetap clear localStorage meskipun Firebase signOut gagal
+    localStorage.removeItem('userSession');
+    window.location.href = '/';
+  }
 };
 
 // Protected Route Component (opsional)

@@ -24,6 +24,10 @@ ChartJS.register(
   Filler
 );
 
+// Check if mobile
+const isMobile = () => window.innerWidth <= 480;
+const isTablet = () => window.innerWidth <= 768;
+
 export default function SensorChart({ data }) {
   if (!data || data.length === 0) {
     return (
@@ -34,6 +38,15 @@ export default function SensorChart({ data }) {
   }
 
   const chartData = data.slice(0, 10).reverse();
+
+  // Responsive sizes
+  const mobile = isMobile();
+  const tablet = isTablet();
+  const fontSize = mobile ? 9 : tablet ? 10 : 11;
+  const legendFontSize = mobile ? 10 : tablet ? 11 : 13;
+  const pointRadius = mobile ? 3 : tablet ? 4 : 5;
+  const pointHoverRadius = mobile ? 5 : tablet ? 6 : 8;
+  const borderWidth = mobile ? 2 : 3;
 
   // Chart options configuration
   const getChartOptions = (label) => ({
@@ -54,14 +67,14 @@ export default function SensorChart({ data }) {
         labels: {
           color: '#94a3b8',
           font: {
-            size: 13,
+            size: legendFontSize,
             weight: '500',
           },
-          padding: 15,
+          padding: mobile ? 8 : tablet ? 10 : 15,
           usePointStyle: true,
           pointStyle: 'rectRounded',
-          boxWidth: 15,
-          boxHeight: 15,
+          boxWidth: mobile ? 10 : tablet ? 12 : 15,
+          boxHeight: mobile ? 10 : tablet ? 12 : 15,
         }
       },
       title: {
@@ -70,32 +83,32 @@ export default function SensorChart({ data }) {
       tooltip: {
         enabled: true,
         backgroundColor: 'rgba(26, 47, 71, 0.95)',
-        padding: 16,
+        padding: mobile ? 10 : tablet ? 12 : 16,
         titleColor: '#fff',
         titleFont: {
-          size: 14,
+          size: mobile ? 11 : tablet ? 12 : 14,
           weight: 'bold',
         },
         bodyColor: '#e2e8f0',
         bodyFont: {
-          size: 13,
+          size: mobile ? 10 : tablet ? 11 : 13,
         },
-        bodySpacing: 6,
+        bodySpacing: mobile ? 4 : 6,
         borderColor: '#00b4d8',
         borderWidth: 2,
         displayColors: true,
-        boxWidth: 10,
-        boxHeight: 10,
+        boxWidth: mobile ? 8 : 10,
+        boxHeight: mobile ? 8 : 10,
         usePointStyle: true,
-        cornerRadius: 8,
-        caretSize: 8,
+        cornerRadius: mobile ? 6 : 8,
+        caretSize: mobile ? 6 : 8,
         callbacks: {
           title: function(tooltipItems) {
             const index = tooltipItems[0].dataIndex;
             const totalPoints = tooltipItems[0].dataset.data.length;
             if (index === 0) return 'Data Terlama';
             if (index === totalPoints - 1) return 'Data Terbaru';
-            return `Data ke-${index + 1}`;
+            return `Data ke-${totalPoints - index}`;
           },
           label: function(context) {
             return ` ${context.dataset.label}: ${context.parsed.y.toFixed(2)}`;
@@ -113,7 +126,7 @@ export default function SensorChart({ data }) {
         ticks: {
           color: '#94a3b8',
           font: {
-            size: 11,
+            size: fontSize,
           },
           maxRotation: 0,
           autoSkip: true,
@@ -128,7 +141,7 @@ export default function SensorChart({ data }) {
         ticks: {
           color: '#94a3b8',
           font: {
-            size: 11,
+            size: fontSize,
           },
           callback: function(value) {
             return value.toFixed(1);
@@ -141,19 +154,19 @@ export default function SensorChart({ data }) {
         tension: 0.4,
       },
       point: {
-        radius: 5,
-        hoverRadius: 8,
-        borderWidth: 2,
+        radius: pointRadius,
+        hoverRadius: pointHoverRadius,
+        borderWidth: mobile ? 1 : 2,
         backgroundColor: '#1a2f47',
-        hitRadius: 30,
-        hoverBorderWidth: 3,
+        hitRadius: mobile ? 20 : 30,
+        hoverBorderWidth: mobile ? 2 : 3,
       }
     }
   });
 
   // Render chart with multiple datasets
   const renderMultiChart = (datasets, title) => {
-    const labels = datasets[0].values.map((_, index) => 
+    const labels = datasets[0].values.map((_, index) =>
       index === 0 ? 'Start' : index === datasets[0].values.length - 1 ? 'Latest' : ''
     );
 
@@ -164,16 +177,16 @@ export default function SensorChart({ data }) {
         data: dataset.values,
         borderColor: dataset.color,
         backgroundColor: dataset.color,
-        borderWidth: 3,
+        borderWidth: borderWidth,
         fill: false,
         pointBackgroundColor: dataset.color,
         pointBorderColor: '#1a2f47',
         pointHoverBackgroundColor: dataset.color,
         pointHoverBorderColor: '#fff',
-        pointRadius: 5,
-        pointHoverRadius: 8,
-        pointHitRadius: 30,
-        pointHoverBorderWidth: 3,
+        pointRadius: pointRadius,
+        pointHoverRadius: pointHoverRadius,
+        pointHitRadius: mobile ? 20 : 30,
+        pointHoverBorderWidth: mobile ? 2 : 3,
       })),
     };
 

@@ -81,15 +81,18 @@ const Table = ({ data }) => {
         styles: {
           fontSize: 9,
           cellPadding: 3,
+          textColor: [0, 0, 0],
+          lineColor: [0, 0, 0],
+          lineWidth: 0.2,
         },
         headStyles: {
-          fillColor: [0, 180, 216],
-          textColor: [255, 255, 255],
+          fillColor: [26, 47, 71],
+          textColor: [0, 180, 216],
           fontStyle: 'bold',
           halign: 'center'
         },
         alternateRowStyles: {
-          fillColor: [240, 248, 255]
+          fillColor: [235, 242, 248]
         },
         columnStyles: {
           0: { halign: 'center', cellWidth: 15 },
@@ -120,8 +123,8 @@ const Table = ({ data }) => {
       <div className="table-wrapper">
         <div className="table-header">
           <h2 className="table-title">Riwayat Data Sensor (Setiap 30 Menit)</h2>
-          <button 
-            className="export-btn" 
+          <button
+            className="export-btn"
             onClick={handleExportPDF}
             disabled={isExporting || !data || data.length === 0}
           >
@@ -133,44 +136,46 @@ const Table = ({ data }) => {
             {isExporting ? 'Exporting...' : 'Export PDF'}
           </button>
         </div>
-        <table className="sensor-table">
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>Humidity (%)</th>
-              <th>Temperature (°C)</th>
-              <th>MQ-135 Ratio</th>
-              <th>MQ-7 Ratio</th>
-              <th>Tanggal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentData.map((item, index) => (
-              <tr key={item.id}>
-                <td>{indexOfFirstItem + index + 1}</td>
-                <td>{item.humidity}</td>
-                <td>{item.temperature}</td>
-                <td>{item.mq135_ratio}</td>
-                <td>{item.mq7_ratio}</td>
-                <td>{item.timestamp}</td>
+        <div className="table-scroll">
+          <table className="sensor-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Humidity (%)</th>
+                <th>Temperature (°C)</th>
+                <th>MQ-135 Ratio</th>
+                <th>MQ-7 Ratio</th>
+                <th>Tanggal</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-        
+            </thead>
+            <tbody>
+              {currentData.map((item, index) => (
+                <tr key={item.id}>
+                  <td>{indexOfFirstItem + index + 1}</td>
+                  <td>{item.humidity}</td>
+                  <td>{item.temperature}</td>
+                  <td>{item.mq135_ratio}</td>
+                  <td>{item.mq7_ratio}</td>
+                  <td>{item.timestamp}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         {/* Pagination Controls */}
         {data.length > 0 && (
           <div className="pagination">
-            <button 
-              className="pagination-btn" 
+            <button
+              className="pagination-btn"
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
             >
               Previous
             </button>
-            
-            <button 
-              className="pagination-btn" 
+
+            <button
+              className="pagination-btn"
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >

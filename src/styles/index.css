@@ -1,21 +1,37 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  /* Color Scheme Variables */
-  --bg-primary: #0D1B2A;        /* Background utama - Biru gelap */
-  --bg-card: #1B263B;           /* Card/panel - Biru keabu-abuan */
-  --text-primary: #E0E1DD;      /* Teks utama - Abu muda */
-  --text-secondary: #A9B7C0;    /* Teks sekunder - Abu kebiruan */
-  --accent-active: #00B4D8;     /* Aksen tombol/link aktif - Cyan */
-  --data-chart: #90E0EF;        /* Warna grafik data - Biru muda */
-  --warning: #FB8500;           /* Warna peringatan - Oranye */
-  --danger: #E63946;            /* Warna bahaya - Merah */
-  --safe: #2ECC71;              /* Warna aman - Hijau */
+  /* Theme */
+  --bg-0: #071427;
+  --bg-1: #0b2140;
+  --surface-0: #0c1d33;
+  --surface-1: #0f2744;
+  --surface-2: #123053;
+  --border-0: rgba(148, 163, 184, 0.14);
+  --border-1: rgba(148, 163, 184, 0.22);
 
-  color: var(--text-primary);
-  background-color: var(--bg-primary);
+  --text-0: rgba(226, 232, 240, 0.92);
+  --text-1: rgba(226, 232, 240, 0.72);
+  --text-2: rgba(226, 232, 240, 0.52);
+
+  --shadow-sm: 0 6px 16px rgba(0, 0, 0, 0.22);
+  --shadow-md: 0 14px 28px rgba(0, 0, 0, 0.26);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+
+  --ease: 0.25s ease;
+
+  /* Accents (used as highlights only) */
+  --accent-cyan: #00b4d8;
+  --accent-red: #ff6b6b;
+  --accent-purple: #9b59b6;
+  --accent-orange: #f39c12;
+
+  color: var(--text-0);
+  background-color: var(--bg-0);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -37,8 +53,11 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
+  background:
+    radial-gradient(900px 520px at 15% -10%, rgba(0, 180, 216, 0.10), transparent 60%),
+    radial-gradient(780px 480px at 110% 10%, rgba(155, 89, 182, 0.08), transparent 55%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+  color: var(--text-0);
   overflow-x: hidden;
 }
 
@@ -47,39 +66,15 @@ body {
   box-sizing: border-box;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

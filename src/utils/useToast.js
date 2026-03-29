@@ -8,6 +8,14 @@ export const useToast = () => {
   const [toasts, setToasts] = useState([]);
 
   /**
+   * Menyembunyikan toast berdasarkan ID
+   * @param {number} id - ID toast yang akan disembunyikan
+   */
+  const hideToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((toast) => toast.id !== id));
+  }, []);
+
+  /**
    * Menampilkan toast notification
    * @param {string} message - Pesan yang akan ditampilkan
    * @param {string} type - Tipe toast: 'success', 'error', 'warning', 'info'
@@ -34,15 +42,7 @@ export const useToast = () => {
     }
 
     return id;
-  }, []);
-
-  /**
-   * Menyembunyikan toast berdasarkan ID
-   * @param {number} id - ID toast yang akan disembunyikan
-   */
-  const hideToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((toast) => toast.id !== id));
-  }, []);
+  }, [hideToast]);
 
   /**
    * Menghapus semua toast

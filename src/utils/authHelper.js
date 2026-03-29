@@ -43,7 +43,7 @@ export const logout = async () => {
 };
 
 // Protected Route Component (opsional)
-export const requireAuth = (callback) => {
+export const requireAuth = () => {
   if (!isAuthenticated()) {
     window.location.href = '/';
     return false;

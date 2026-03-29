@@ -8,6 +8,77 @@ const Table = ({ data }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
+  const parseToDate = (value) => {
+    if (!value) return null;
+    if (value instanceof Date) return value;
+
+    if (typeof value === 'object') {
+      if (typeof value.toDate === 'function') {
+        const asDate = value.toDate();
+        return asDate instanceof Date && !Number.isNaN(asDate.getTime()) ? asDate : null;
+      }
+      if (typeof value.seconds === 'number') {
+        const asDate = new Date(value.seconds * 1000);
+        return !Number.isNaN(asDate.getTime()) ? asDate : null;
+      }
+    }
+
+    if (typeof value === 'number') {
+      const asDate = new Date(value);
+      return !Number.isNaN(asDate.getTime()) ? asDate : null;
+    }
+
+    if (typeof value === 'string') {
+      const normalized = value.includes('T') ? value : value.replace(' ', 'T');
+      const asDate = new Date(normalized);
+      if (!Number.isNaN(asDate.getTime())) return asDate;
+
+      const match = value.match(
+        /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?$/
+      );
+      if (match) {
+        const [, y, m, d, hh, mm, ss] = match;
+        const localDate = new Date(
+          Number(y),
+          Number(m) - 1,
+          Number(d),
+          Number(hh),
+          Number(mm),
+          Number(ss || 0)
+        );
+        return !Number.isNaN(localDate.getTime()) ? localDate : null;
+      }
+    }
+
+    return null;
+  };
+
+  const formatNumber = (value, fractionDigits = 2) => {
+    if (value === null || value === undefined || value === '') return '—';
+    const numericValue = Number(value);
+    if (Number.isFinite(numericValue)) {
+      return new Intl.NumberFormat('id-ID', {
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
+      }).format(numericValue);
+    }
+    return String(value);
+  };
+
+  const formatDateTimeId = (value) => {
+    const date = parseToDate(value);
+    if (!date) return value ? String(value) : '—';
+
+    return new Intl.DateTimeFormat('id-ID', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+    }).format(date);
+  };
+
   // Hitung total halaman
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -32,8 +103,6 @@ const Table = ({ data }) => {
   const handleExportPDF = () => {
     try {
       setIsExporting(true);
-      console.log('Memulai export PDF...');
-      console.log('Data yang akan di-export:', data);
 
       // Validasi data
       if (!data || data.length === 0) {
@@ -42,28 +111,41 @@ const Table = ({ data }) => {
         return;
       }
 
-      const doc = new jsPDF();
-      
-      // Set judul dokumen
-      doc.setFontSize(18);
-      doc.text('Riwayat Data Sensor (Setiap 30 Menit)', 14, 22);
-      
-      // Set informasi tambahan
-      doc.setFontSize(11);
-      doc.text(`Tanggal Export: ${new Date().toLocaleString('id-ID')}`, 14, 30);
-      doc.text(`Total Data: ${data.length} record`, 14, 36);
-      
+      const exportedAt = new Date();
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const marginX = 40;
+
+      const timestamps = data
+        .map((row) => parseToDate(row?.timestamp))
+        .filter((d) => d instanceof Date && !Number.isNaN(d.getTime()));
+      const minDate = timestamps.length ? new Date(Math.min(...timestamps.map((d) => d.getTime()))) : null;
+      const maxDate = timestamps.length ? new Date(Math.max(...timestamps.map((d) => d.getTime()))) : null;
+      const periodText = minDate && maxDate ? `${formatDateTimeId(minDate)} – ${formatDateTimeId(maxDate)}` : '—';
+
+      // Header (judul + metadata)
+      doc.setTextColor(26, 47, 71);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Laporan Riwayat Data Sensor', marginX, 44);
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(60, 60, 60);
+      doc.text(`Periode data: ${periodText}`, marginX, 64);
+      doc.text(`Diekspor pada: ${formatDateTimeId(exportedAt)}`, marginX, 80);
+      doc.text(`Total data: ${data.length} record`, marginX, 96);
+
       // Konversi data untuk tabel PDF
       const tableData = data.map((item, index) => [
         index + 1,
-        item.humidity,
-        item.temperature,
-        item.mq135_ratio,
-        item.mq7_ratio,
-        item.timestamp
+        formatNumber(item?.humidity, 2),
+        formatNumber(item?.temperature, 2),
+        formatNumber(item?.mq135_ratio, 2),
+        formatNumber(item?.mq7_ratio, 2),
+        formatDateTimeId(item?.timestamp),
       ]);
-      
-      console.log('Table data untuk PDF:', tableData);
       
       // Generate tabel dengan autoTable
       autoTable(doc, {
@@ -76,40 +158,57 @@ const Table = ({ data }) => {
           'Tanggal'
         ]],
         body: tableData,
-        startY: 42,
+        startY: 112,
         theme: 'grid',
+        margin: { left: marginX, right: marginX },
         styles: {
+          font: 'helvetica',
           fontSize: 9,
-          cellPadding: 3,
-          textColor: [0, 0, 0],
-          lineColor: [0, 0, 0],
-          lineWidth: 0.2,
+          cellPadding: 6,
+          textColor: [30, 30, 30],
+          lineColor: [210, 210, 210],
+          lineWidth: 0.6,
+          valign: 'middle',
         },
         headStyles: {
           fillColor: [26, 47, 71],
-          textColor: [0, 180, 216],
+          textColor: [255, 255, 255],
           fontStyle: 'bold',
-          halign: 'center'
+          halign: 'center',
+          valign: 'middle',
         },
         alternateRowStyles: {
-          fillColor: [235, 242, 248]
+          fillColor: [245, 248, 251],
         },
         columnStyles: {
-          0: { halign: 'center', cellWidth: 15 },
-          1: { halign: 'center' },
-          2: { halign: 'center' },
-          3: { halign: 'center' },
-          4: { halign: 'center' },
-          5: { halign: 'center' }
-        }
+          0: { halign: 'center', cellWidth: 28 },
+          1: { halign: 'right', cellWidth: 76 },
+          2: { halign: 'right', cellWidth: 90 },
+          3: { halign: 'right', cellWidth: 74 },
+          4: { halign: 'right', cellWidth: 68 },
+          5: { halign: 'left', cellWidth: 130 },
+        },
+        didDrawPage: () => {
+          const pageNumber =
+            typeof doc.internal.getNumberOfPages === 'function'
+              ? doc.internal.getNumberOfPages()
+              : typeof doc.getNumberOfPages === 'function'
+                ? doc.getNumberOfPages()
+                : 1;
+
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(9);
+          doc.setTextColor(120, 120, 120);
+          doc.text(`Halaman ${pageNumber}`, pageWidth - marginX, pageHeight - 22, { align: 'right' });
+        },
       });
       
       // Simpan PDF dengan nama file yang dinamis
-      const fileName = `Data_Sensor_${new Date().toISOString().split('T')[0]}.pdf`;
-      console.log('Menyimpan PDF dengan nama:', fileName);
+      const datePart = exportedAt.toISOString().split('T')[0];
+      const timePart = exportedAt.toTimeString().slice(0, 8).replaceAll(':', '-');
+      const fileName = `Laporan_Data_Sensor_${datePart}_${timePart}.pdf`;
       doc.save(fileName);
-      
-      console.log('PDF berhasil di-export!');
+
       setIsExporting(false);
     } catch (error) {
       console.error('Error saat export PDF:', error);

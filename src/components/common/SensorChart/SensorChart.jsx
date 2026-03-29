@@ -44,12 +44,12 @@ export default function SensorChart({ data }) {
   const tablet = isTablet();
   const fontSize = mobile ? 9 : tablet ? 10 : 11;
   const legendFontSize = mobile ? 10 : tablet ? 11 : 13;
-  const pointRadius = mobile ? 3 : tablet ? 4 : 5;
-  const pointHoverRadius = mobile ? 5 : tablet ? 6 : 8;
-  const borderWidth = mobile ? 2 : 3;
+  const pointRadius = mobile ? 2 : tablet ? 2 : 3;
+  const pointHoverRadius = mobile ? 3 : tablet ? 4 : 5;
+  const borderWidth = mobile ? 1 : 2;
 
   // Chart options configuration
-  const getChartOptions = (label) => ({
+  const getChartOptions = () => ({
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
@@ -82,7 +82,7 @@ export default function SensorChart({ data }) {
       },
       tooltip: {
         enabled: true,
-        backgroundColor: 'rgba(26, 47, 71, 0.95)',
+        backgroundColor: 'rgba(12, 29, 51, 0.96)',
         padding: mobile ? 10 : tablet ? 12 : 16,
         titleColor: '#fff',
         titleFont: {
@@ -94,8 +94,8 @@ export default function SensorChart({ data }) {
           size: mobile ? 10 : tablet ? 11 : 13,
         },
         bodySpacing: mobile ? 4 : 6,
-        borderColor: '#00b4d8',
-        borderWidth: 2,
+        borderColor: 'rgba(148, 163, 184, 0.25)',
+        borderWidth: 1,
         displayColors: true,
         boxWidth: mobile ? 8 : 10,
         boxHeight: mobile ? 8 : 10,
@@ -119,12 +119,11 @@ export default function SensorChart({ data }) {
     scales: {
       x: {
         grid: {
-          color: '#334155',
-          borderDash: [4, 4],
+          color: 'rgba(148, 163, 184, 0.12)',
           drawBorder: false,
         },
         ticks: {
-          color: '#94a3b8',
+          color: 'rgba(226, 232, 240, 0.55)',
           font: {
             size: fontSize,
           },
@@ -134,12 +133,11 @@ export default function SensorChart({ data }) {
       },
       y: {
         grid: {
-          color: '#334155',
-          borderDash: [4, 4],
+          color: 'rgba(148, 163, 184, 0.12)',
           drawBorder: false,
         },
         ticks: {
-          color: '#94a3b8',
+          color: 'rgba(226, 232, 240, 0.55)',
           font: {
             size: fontSize,
           },
@@ -157,7 +155,7 @@ export default function SensorChart({ data }) {
         radius: pointRadius,
         hoverRadius: pointHoverRadius,
         borderWidth: mobile ? 1 : 2,
-        backgroundColor: '#1a2f47',
+        backgroundColor: 'rgba(12, 29, 51, 0.9)',
         hitRadius: mobile ? 20 : 30,
         hoverBorderWidth: mobile ? 2 : 3,
       }
@@ -194,7 +192,7 @@ export default function SensorChart({ data }) {
       <div className="chart-card">
         <h3 className="chart-title">{title}</h3>
         <div className="chart-container">
-          <Line data={chartDataset} options={getChartOptions(title)} />
+          <Line data={chartDataset} options={getChartOptions()} />
         </div>
       </div>
     );
@@ -214,7 +212,7 @@ export default function SensorChart({ data }) {
       
       {renderMultiChart([
         { label: 'Sensor Gas MQ-135 (PPM)', values: mq135Values, color: '#9b59b6' },
-        { label: 'Sensor Gas MQ-7 (PPM)', values: mq7Values, color: '#e74c3c' }
+        { label: 'Sensor Gas MQ-7 (PPM)', values: mq7Values, color: '#f39c12' }
       ], "Data Sensor Gas MQ-135 & MQ-7")}
     </div>
   );

@@ -1,7 +1,7 @@
 /* Tabel Data Sensor */
 .table-container {
   padding: clamp(20px, 4vw, 40px);
-  max-width: clamp(900px, 90vw, 1400px);
+  max-width: 1400px;
   width: 100%;
   margin: 0 auto;
   animation: fadeInUp 0.6s ease-out 0.4s backwards;
@@ -16,11 +16,11 @@
   flex-wrap: wrap;
   gap: clamp(10px, 2vw, 15px);
   padding-bottom: clamp(10px, 2vw, 15px);
-  border-bottom: 1px solid rgba(0, 180, 216, 0.3);
+  border-bottom: 1px solid var(--border-0);
 }
 
 .table-title {
-  color: #ffffff;
+  color: var(--text-0);
   font-size: clamp(16px, 3vw, 24px);
   font-weight: 600;
   margin: 0;
@@ -34,36 +34,36 @@
   justify-content: center;
   gap: clamp(6px, 1vw, 8px);
   padding: clamp(8px, 1.5vw, 10px) clamp(15px, 2.5vw, 20px);
-  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(18, 48, 83, 0.95) 0%, rgba(12, 29, 51, 0.95) 100%);
+  color: var(--text-0);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
   font-size: clamp(12px, 1.5vw, 14px);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 180, 216, 0.3);
+  transition: background var(--ease), border-color var(--ease), transform var(--ease);
+  box-shadow: none;
   white-space: nowrap;
   min-width: fit-content;
 }
 
 .export-btn:hover {
-  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.5);
+  background: linear-gradient(135deg, rgba(20, 58, 104, 0.95) 0%, rgba(12, 29, 51, 0.95) 100%);
+  border-color: var(--border-1);
+  transform: translateY(-1px);
 }
 
 .export-btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 6px rgba(0, 180, 216, 0.3);
 }
 
 .export-btn:disabled {
-  background: linear-gradient(135deg, #666 0%, #555 100%);
+  background: rgba(255, 255, 255, 0.06);
   cursor: not-allowed;
   opacity: 0.6;
   transform: none;
   box-shadow: none;
+  border-color: var(--border-0);
 }
 
 .export-btn svg {
@@ -73,11 +73,11 @@
 }
 
 .table-wrapper {
-  background: #1a2f47;
+  background: rgba(15, 39, 68, 0.85);
   border-radius: clamp(8px, 1.5vw, 12px);
   padding: clamp(15px, 2.5vw, 20px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-0);
   width: 100%;
   box-sizing: border-box;
 }
@@ -93,13 +93,13 @@
   width: 100%;
   min-width: 800px;
   border-collapse: collapse;
-  color: #ffffff;
+  color: var(--text-0);
   table-layout: auto;
 }
 
 .sensor-table thead {
-  background: rgba(0, 180, 216, 0.2);
-  border-bottom: 2px solid #00b4d8;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border-0);
 }
 
 .sensor-table th {
@@ -107,20 +107,18 @@
   text-align: left;
   font-weight: 600;
   font-size: clamp(11px, 1.5vw, 14px);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #00b4d8;
+  letter-spacing: 0.2px;
+  color: var(--text-1);
   white-space: nowrap;
 }
 
 .sensor-table tbody tr {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+  transition: background var(--ease);
 }
 
 .sensor-table tbody tr:hover {
-  background: rgba(0, 180, 216, 0.1);
-  transform: scale(1.01);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .sensor-table tbody tr:last-child {
@@ -130,13 +128,13 @@
 .sensor-table td {
   padding: clamp(10px, 2vw, 15px);
   font-size: clamp(12px, 1.5vw, 14px);
-  color: #b0b8c4;
+  color: var(--text-1);
   white-space: nowrap;
 }
 
 .sensor-table tbody tr td:first-child {
   font-weight: 600;
-  color: #00b4d8;
+  color: var(--text-0);
 }
 
 @keyframes fadeInUp {
@@ -292,37 +290,38 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 100px;
+  gap: 12px;
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-0);
 }
 
 .pagination-btn {
   padding: 8px 16px;
-  background: linear-gradient(135deg, #00b4d8 0%, #0096c7 100%);
-  color: #ffffff;
-  border: none;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-0);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(0, 180, 216, 0.3);
+  transition: background var(--ease), border-color var(--ease), transform var(--ease);
+  box-shadow: none;
 }
 
 .pagination-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0096c7 0%, #0077b6 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 180, 216, 0.5);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--border-1);
+  transform: translateY(-1px);
 }
 
 .pagination-btn:disabled {
-  background: linear-gradient(135deg, #666 0%, #555 100%);
+  background: rgba(255, 255, 255, 0.05);
   cursor: not-allowed;
   opacity: 0.4;
   transform: none;
   box-shadow: none;
+  border-color: var(--border-0);
 }
 
 .pagination-numbers {

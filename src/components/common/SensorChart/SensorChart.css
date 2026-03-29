@@ -1,42 +1,45 @@
 .sensor-chart-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem 0;
+  gap: 24px;
+  padding: 0 28px 28px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .sensor-chart-container {
-  background: linear-gradient(135deg, rgba(26, 47, 71, 0.95) 0%, rgba(13, 27, 42, 0.95) 100%);
-  border-radius: 12px;
+  background: rgba(15, 39, 68, 0.85);
+  border-radius: var(--radius-md);
   padding: 24px;
   margin: 30px auto;
   max-width: 1400px;
   width: 100%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(100, 200, 255, 0.2);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-0);
   animation: fadeIn 0.5s ease-in;
 }
 
 .no-data-text {
-  color: #ccc;
+  color: var(--text-1);
   text-align: center;
   font-size: 1rem;
   padding: 2.5rem 0;
 }
 
 .chart-card {
-  background-color: #1a2f47;
-  border-radius: 16px;
+  background-color: rgba(15, 39, 68, 0.85);
+  border-radius: var(--radius-md);
   padding: 1.5rem;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-sm);
   animation: fadeIn 0.5s ease-in;
-  border: 1px solid rgba(100, 200, 255, 0.1);
+  border: 1px solid var(--border-0);
 }
 
 .chart-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-0);
   margin-bottom: 1rem;
 }
 
@@ -59,7 +62,8 @@
 /* Responsive */
 @media (max-width: 768px) {
   .sensor-chart-wrapper {
-    gap: 0.75rem;
+    gap: 16px;
+    padding: 0 16px 20px;
   }
 
   .chart-card {
@@ -80,8 +84,8 @@
 
 @media (max-width: 480px) {
   .sensor-chart-wrapper {
-    gap: 0.5rem;
-    padding: 0.5rem 0;
+    gap: 12px;
+    padding: 0 16px 16px;
   }
 
   .chart-card {

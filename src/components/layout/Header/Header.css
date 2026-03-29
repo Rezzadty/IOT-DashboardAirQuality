@@ -1,7 +1,7 @@
 .header {
-  background: linear-gradient(135deg, #1a2f47 0%, #0d1b2a 100%);
-  border-bottom: 2px solid rgba(100, 200, 255, 0.3);
-  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.4);
+  background: rgba(12, 29, 51, 0.96);
+  border-bottom: 1px solid var(--border-0);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.20);
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -10,7 +10,7 @@
 .header-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 15px 30px;
+  padding: 16px 28px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,23 +31,30 @@
 }
 
 .logo-icon {
-  font-size: 32px;
-  filter: drop-shadow(0 0 10px rgba(100, 200, 255, 0.5));
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(226, 232, 240, 0.92);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-0);
 }
 
 .logo-text h1 {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.5px;
+  color: var(--text-0);
+  letter-spacing: 0.2px;
   line-height: 1.2;
 }
 
 .logo-text .subtitle {
   display: block;
   font-size: 12px;
-  color: rgba(100, 200, 255, 0.8);
+  color: var(--text-2);
   font-weight: 400;
   margin-top: 2px;
 }
@@ -64,8 +71,8 @@
   gap: 10px;
   padding: 8px 15px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 25px;
-  border: 1px solid rgba(100, 200, 255, 0.2);
+  border-radius: 999px;
+  border: 1px solid var(--border-0);
 }
 
 .user-avatar {
@@ -75,12 +82,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(100, 200, 255, 0.15);
+  background: rgba(255, 255, 255, 0.06);
   border-radius: 50%;
 }
 
 .username {
-  color: #ffffff;
+  color: var(--text-0);
   font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
@@ -91,21 +98,20 @@
   align-items: center;
   gap: 8px;
   padding: 10px 20px;
-  background: rgba(255, 80, 80, 0.15);
-  border: 1px solid rgba(255, 80, 80, 0.3);
-  border-radius: 8px;
-  color: #ff6b6b;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-0);
+  border-radius: 10px;
+  color: var(--text-0);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: background var(--ease), border-color var(--ease), transform var(--ease);
 }
 
 .logout-button:hover {
-  background: rgba(255, 80, 80, 0.25);
-  border-color: rgba(255, 80, 80, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(255, 80, 80, 0.3);
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--border-1);
+  transform: translateY(-1px);
 }
 
 .logout-icon {
@@ -125,7 +131,9 @@
   }
 
   .logo-icon {
-    font-size: 24px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
   }
 
   .logo-text h1 {

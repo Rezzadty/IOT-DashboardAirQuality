@@ -6,7 +6,7 @@
   border-radius: 20px;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: background var(--ease), border-color var(--ease);
 }
 
 .device-status.online {
@@ -17,7 +17,6 @@
 .device-status.offline {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
-  animation: pulse 2s infinite;
 }
 
 .status-icon {
@@ -49,15 +48,6 @@
   font-size: 11px;
   color: var(--text-secondary);
   opacity: 0.8;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
 }
 
 /* Responsive */

@@ -1,4 +1,3 @@
-import React from 'react';
 import './LoadingState.css';
 
 const LoadingState = ({ message = 'Memuat data dari Firebase...' }) => {

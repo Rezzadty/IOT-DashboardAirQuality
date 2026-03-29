@@ -1,15 +1,15 @@
 .air-quality-badge {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 12px;
   font-weight: 600;
-  margin-top: 8px;
-  transition: all 0.3s ease;
-  border: 2px solid;
+  transition: background var(--ease), border-color var(--ease);
+  border: 1px solid var(--border-0);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .air-quality-icon {
@@ -23,58 +23,37 @@
 
 /* Good - Hijau */
 .air-quality-green {
-  background: rgba(34, 197, 94, 0.15);
-  border-color: rgba(34, 197, 94, 0.5);
-  color: #22c55e;
+  background: rgba(34, 197, 94, 0.10);
+  border-color: rgba(34, 197, 94, 0.22);
+  color: rgba(226, 232, 240, 0.92);
 }
 
 /* Moderate - Kuning */
 .air-quality-yellow {
-  background: rgba(251, 191, 36, 0.15);
-  border-color: rgba(251, 191, 36, 0.5);
-  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.10);
+  border-color: rgba(251, 191, 36, 0.22);
+  color: rgba(226, 232, 240, 0.92);
 }
 
 /* Unhealthy - Orange */
 .air-quality-orange {
-  background: rgba(249, 115, 22, 0.15);
-  border-color: rgba(249, 115, 22, 0.5);
-  color: #f97316;
-  animation: pulse-warning 2s infinite;
+  background: rgba(249, 115, 22, 0.10);
+  border-color: rgba(249, 115, 22, 0.22);
+  color: rgba(226, 232, 240, 0.92);
 }
 
 /* Hazardous - Merah */
 .air-quality-red {
-  background: rgba(239, 68, 68, 0.15);
-  border-color: rgba(239, 68, 68, 0.5);
-  color: #ef4444;
-  animation: pulse-danger 1.5s infinite;
-}
-
-/* Animations */
-@keyframes pulse-warning {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 6px rgba(249, 115, 22, 0);
-  }
-}
-
-@keyframes pulse-danger {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
-  }
-  50% {
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
-  }
+  background: rgba(239, 68, 68, 0.10);
+  border-color: rgba(239, 68, 68, 0.22);
+  color: rgba(226, 232, 240, 0.92);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
   .air-quality-badge {
-    padding: 6px 12px;
-    font-size: 12px;
+    padding: 6px 10px;
+    font-size: 11px;
   }
 
   .air-quality-icon {

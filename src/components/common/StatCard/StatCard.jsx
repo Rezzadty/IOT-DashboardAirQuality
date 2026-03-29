@@ -1,9 +1,30 @@
-import React from 'react';
 import { getAirQualityStatus } from '../../../utils/deviceStatus';
 import AirQualityBadge from '../AirQualityBadge/AirQualityBadge';
 import './StatCard.css';
 
 function StatCard({ data }) {
+  const getComfortBadge = (sensorKey, rawValue) => {
+    const value = Number(rawValue);
+
+    if (!Number.isFinite(value)) {
+      return { text: 'Tidak Ada Data', tone: 'neutral' };
+    }
+
+    if (sensorKey === 'humidity') {
+      if (value >= 30 && value <= 60) return { text: 'Aman', tone: 'good' };
+      if (value >= 25 && value <= 70) return { text: 'Sedang', tone: 'moderate' };
+      return { text: 'Perlu Cek', tone: 'alert' };
+    }
+
+    if (sensorKey === 'temperature') {
+      if (value >= 18 && value <= 30) return { text: 'Aman', tone: 'good' };
+      if (value >= 15 && value <= 35) return { text: 'Sedang', tone: 'moderate' };
+      return { text: 'Perlu Cek', tone: 'alert' };
+    }
+
+    return { text: '—', tone: 'neutral' };
+  };
+
   // Konfigurasi untuk setiap card
   const cardConfigs = [
     {
@@ -69,31 +90,41 @@ function StatCard({ data }) {
         // Tampilkan badge kualitas udara untuk MQ135 dan MQ7
         const showAirQualityBadge = config.key === 'mq135_ratio' || config.key === 'mq7_ratio';
 
+        const comfortBadge = !showAirQualityBadge
+          ? getComfortBadge(config.key, value)
+          : null;
+
         return (
-          <div key={index} className="stat-card" style={{ borderColor: config.color }}>
+          <div key={index} className="stat-card" style={{ '--accent': config.color }}>
             <div className="stat-card-header">
-              <div className="stat-card-icon" style={{ backgroundColor: config.color }}>
-                {config.label}
+              <div className="stat-card-meta">
+                <span className="stat-card-sensor">{config.label}</span>
+                <h3 className="stat-card-title">{config.title}</h3>
               </div>
-              <h3 className="stat-card-title">{config.title}</h3>
+              <div className="stat-card-badge-slot">
+                {showAirQualityBadge ? (
+                  <AirQualityBadge 
+                    level={airQualityStatus.level}
+                    text={airQualityStatus.text}
+                    icon={airQualityStatus.icon}
+                    color={airQualityStatus.color}
+                  />
+                ) : (
+                  <span className={`stat-card-badge stat-card-badge--${comfortBadge.tone}`}>
+                    {comfortBadge.text}
+                  </span>
+                )}
+              </div>
             </div>
             <div className="stat-card-body">
               <div className="stat-card-value">
-                <span className="value-number" style={{ color: config.color }}>
+                <span className="value-number">
                   {displayValue}
                 </span>
                 <span className="value-unit">{config.unit}</span>
               </div>
               {config.description && (
                 <p className="stat-card-description">{config.description}</p>
-              )}
-              {showAirQualityBadge && (
-                <AirQualityBadge 
-                  level={airQualityStatus.level}
-                  text={airQualityStatus.text}
-                  icon={airQualityStatus.icon}
-                  color={airQualityStatus.color}
-                />
               )}
             </div>
           </div>

@@ -1,7 +1,6 @@
-import React from 'react';
 import './DeviceStatus.css';
 
-const DeviceStatus = ({ isOnline, lastUpdate, offlineMinutes }) => {
+const DeviceStatus = ({ isOnline, offlineMinutes }) => {
   return (
     <div className={`device-status ${isOnline ? 'online' : 'offline'}`}>
       <span className="status-icon">

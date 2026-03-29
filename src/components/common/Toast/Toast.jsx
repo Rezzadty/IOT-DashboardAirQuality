@@ -1,9 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './Toast.css';
 
 const Toast = ({ message, type = 'info', duration = 3000, onClose, persistent = false }) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
+
+  const handleClose = useCallback(() => {
+    setIsExiting(true);
+    setTimeout(() => {
+      setIsVisible(false);
+      if (onClose) onClose();
+    }, 300);
+  }, [onClose]);
 
   useEffect(() => {
     if (!persistent && duration > 0) {
@@ -13,15 +21,7 @@ const Toast = ({ message, type = 'info', duration = 3000, onClose, persistent = 
 
       return () => clearTimeout(timer);
     }
-  }, [duration, persistent]);
-
-  const handleClose = () => {
-    setIsExiting(true);
-    setTimeout(() => {
-      setIsVisible(false);
-      if (onClose) onClose();
-    }, 300);
-  };
+  }, [duration, persistent, handleClose]);
 
   if (!isVisible) return null;
 

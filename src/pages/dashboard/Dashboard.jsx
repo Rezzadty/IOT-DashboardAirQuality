@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { getUserSession, logout } from '../../utils/authHelper';
+import { useState } from 'react';
+import { logout } from '../../utils/authHelper';
 import { useToast } from '../../utils/useToast';
 import { useSensorData } from '../../utils/useSensorData';
 import Header from '../../components/layout/Header/Header';
@@ -13,7 +13,6 @@ import ErrorState from '../../components/common/ErrorState/ErrorState';
 import './Dashboard.css';
 
 const Dashboard = () => {
-  const [session, setSession] = useState(null);
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   
   const { toasts, showSuccess, showError, showWarning, hideToast } = useToast();
@@ -24,13 +23,6 @@ const Dashboard = () => {
     showError,
     showWarning
   });
-
-  useEffect(() => {
-    const sessionData = getUserSession();
-    if (sessionData) {
-      setSession(sessionData);
-    }
-  }, []);
 
   const handleLogoutClick = () => {
     setShowLogoutPopup(true);

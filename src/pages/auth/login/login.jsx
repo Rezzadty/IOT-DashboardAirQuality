@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import {
+  browserSessionPersistence,
+  setPersistence,
+  signInWithEmailAndPassword
+} from 'firebase/auth';
 import { auth } from '../../../services/firebase';
 import './login.css';
 
@@ -47,6 +51,9 @@ const Login = () => {
     setLoading(true);
 
     try {
+      // Simpan auth hanya selama tab/browser session masih aktif
+      await setPersistence(auth, browserSessionPersistence);
+
       // Login menggunakan Firebase Authentication
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
 

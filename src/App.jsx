@@ -28,12 +28,12 @@ function App() {
       } else {
         // User is signed out
         localStorage.removeItem('userSession')
-
         if (path === '/dashboard') {
           window.location.href = '/'
-        } else {
-          setCurrentPage('login')
+          return 
         }
+        
+        setCurrentPage('login')
       }
 
       setIsLoading(false)

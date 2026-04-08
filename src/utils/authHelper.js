@@ -31,12 +31,11 @@ export const getUserSession = () => {
 // Logout user dengan Firebase Authentication
 export const logout = async () => {
   try {
-    await signOut(auth);
     localStorage.removeItem('userSession');
+    await signOut(auth);
     window.location.href = '/';
   } catch (error) {
     console.error('Logout error:', error);
-    // Tetap clear localStorage meskipun Firebase signOut gagal
     localStorage.removeItem('userSession');
     window.location.href = '/';
   }

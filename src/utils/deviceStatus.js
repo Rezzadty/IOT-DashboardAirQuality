@@ -67,6 +67,30 @@ export const formatTimestamp = (timestamp) => {
   }
 };
 
+const normalizeRatio = (value) => {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric > 0 ? numeric : 0;
+};
+
+// Kurva power-law (aproksimasi datasheet umum) untuk estimasi PPM dari rasio Rs/R0.
+// Nilai ini bukan kalibrasi laboratorium dan bisa disesuaikan per modul/sensor.
+const MQ135_CURVE = { a: 116.6020682, b: -2.769034857 };
+const MQ7_CURVE = { a: 99.042, b: -1.518 };
+
+const ratioToPpm = (ratio, curve) => {
+  const safeRatio = normalizeRatio(ratio);
+  if (safeRatio <= 0) return 0;
+  return curve.a * Math.pow(safeRatio, curve.b);
+};
+
+export const calculateMq135Ppm = (mq135Ratio) => {
+  return Number(ratioToPpm(mq135Ratio, MQ135_CURVE).toFixed(2));
+};
+
+export const calculateMq7Ppm = (mq7Ratio) => {
+  return Number(ratioToPpm(mq7Ratio, MQ7_CURVE).toFixed(2));
+};
+
 /**
  * Get air quality status berdasarkan nilai sensor
  * @param {number} mq135Ratio - Nilai MQ135
@@ -74,44 +98,32 @@ export const formatTimestamp = (timestamp) => {
  * @returns {Object} Status kualitas udara
  */
 export const getAirQualityStatus = (mq135Ratio, mq7Ratio) => {
-  // Thresholds (sesuaikan dengan kebutuhan)
+  // Samakan arah logika dengan ESP: rasio lebih besar = udara lebih bersih.
   const thresholds = {
-    mq135: { good: 2, moderate: 5, unhealthy: 10 },
-    mq7: { good: 5, moderate: 15, unhealthy: 30 }
+    mq135: { clean: 1.6, moderate: 1.1, poor: 0.7 },
+    mq7: { clean: 1.5, moderate: 1.0, poor: 0.6 }
   };
 
-  let status = 'good'; // good, moderate, unhealthy, hazardous
-  let level = 0;
+  const getLevelFromRatio = (ratio, sensorThreshold) => {
+    const value = normalizeRatio(ratio);
+    if (value > sensorThreshold.clean) return 0;
+    if (value > sensorThreshold.moderate) return 1;
+    if (value > sensorThreshold.poor) return 2;
+    return 3;
+  };
 
-  // Check MQ135 (Gas berbahaya)
-  if (mq135Ratio >= thresholds.mq135.unhealthy) {
-    status = 'hazardous';
-    level = 3;
-  } else if (mq135Ratio >= thresholds.mq135.moderate) {
-    status = 'unhealthy';
-    level = 2;
-  } else if (mq135Ratio >= thresholds.mq135.good) {
-    status = 'moderate';
-    level = 1;
-  }
+  const mq135Level = getLevelFromRatio(mq135Ratio, thresholds.mq135);
+  const mq7Level = getLevelFromRatio(mq7Ratio, thresholds.mq7);
+  const level = Math.max(mq135Level, mq7Level);
 
-  // Check MQ7 (Karbon Monoksida)
-  if (mq7Ratio >= thresholds.mq7.unhealthy) {
-    if (level < 3) {
-      status = 'hazardous';
-      level = 3;
-    }
-  } else if (mq7Ratio >= thresholds.mq7.moderate) {
-    if (level < 2) {
-      status = 'unhealthy';
-      level = 2;
-    }
-  } else if (mq7Ratio >= thresholds.mq7.good) {
-    if (level < 1) {
-      status = 'moderate';
-      level = 1;
-    }
-  }
+  const levelToStatus = {
+    0: 'good',
+    1: 'moderate',
+    2: 'unhealthy',
+    3: 'hazardous'
+  };
+
+  const status = levelToStatus[level] || 'good';
 
   const statusLabels = {
     good: { text: 'Baik', icon: '🟢', color: 'green' },

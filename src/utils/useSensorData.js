@@ -1,13 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
 import { database, ref, onValue, query, orderByChild, limitToLast } from '../services/firebase';
-import { checkDeviceStatus, getAirQualityStatus } from './deviceStatus';
+import {
+  checkDeviceStatus,
+  getAirQualityStatus,
+  calculateMq135Ppm,
+  calculateMq7Ppm
+} from './deviceStatus';
 
 /**
  * Custom hook untuk fetch dan manage sensor data dari Firebase
  * @param {Object} options - Options untuk toast notifications
  * @returns {Object} { latestData, sensorData, deviceStatus, loading, error }
  */
-export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
+export const useSensorData = ({
+  showToast,
+  showSuccess,
+  showError,
+  showWarning,
+  hideToast
+} = {}) => {
   const [latestData, setLatestData] = useState(null);
   const [sensorData, setSensorData] = useState([]);
   const [deviceStatus, setDeviceStatus] = useState({ isOnline: false });
@@ -15,6 +26,8 @@ export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
   const [error, setError] = useState(null);
 
   const previousStatusRef = useRef(null);
+  const previousAirQualityStatusRef = useRef(null);
+  const activeAirQualityToastIdRef = useRef(null);
   const isFirstRenderRef = useRef(true);
 
   useEffect(() => {
@@ -27,11 +40,16 @@ export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
           const data = snapshot.val();
           console.log('Latest data received:', data);
 
+          const mq135Ratio = Number(data.mq135_ratio) || 0;
+          const mq7Ratio = Number(data.mq7_ratio) || 0;
+
           const newLatestData = {
             humidity: data.humidity || 0,
             temperature: data.temperature || 0,
-            mq135_ratio: data.mq135_ratio || 0,
-            mq7_ratio: data.mq7_ratio || 0,
+            mq135_ratio: mq135Ratio,
+            mq7_ratio: mq7Ratio,
+            mq135_ppm: Number(data.mq135_ppm) || calculateMq135Ppm(mq135Ratio),
+            mq7_ppm: Number(data.mq7_ppm) || calculateMq7Ppm(mq7Ratio),
             timestamp: data.timestamp || new Date().toISOString(),
             device_status: data.device_status || 'offline',
             mq135_status: data.mq135_status || 'Unknown',
@@ -50,6 +68,11 @@ export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
           if (!isFirstRenderRef.current && previousStatusRef.current !== null) {
             // Jika status berubah dari online ke offline
             if (previousStatusRef.current.isOnline && !status.isOnline) {
+              if (activeAirQualityToastIdRef.current !== null && typeof hideToast === 'function') {
+                hideToast(activeAirQualityToastIdRef.current);
+                activeAirQualityToastIdRef.current = null;
+              }
+
               if (showError) {
                 showError(
                   `Alat tidak merespons! Terakhir update ${status.offlineMinutes} menit yang lalu.`,
@@ -71,10 +94,26 @@ export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
                 newLatestData.mq7_ratio
               );
 
-              if (airQuality.level >= 3 && showError) {
-                showError(`Kualitas udara ${airQuality.text}! ${airQuality.icon}`, true);
-              } else if (airQuality.level === 2 && showWarning) {
-                showWarning(`Kualitas udara ${airQuality.text}. ${airQuality.icon}`);
+              // Saat status kualitas berubah, toast lama ditutup dan diganti toast terbaru.
+              if (previousAirQualityStatusRef.current !== airQuality.status) {
+                if (activeAirQualityToastIdRef.current !== null && typeof hideToast === 'function') {
+                  hideToast(activeAirQualityToastIdRef.current);
+                  activeAirQualityToastIdRef.current = null;
+                }
+
+                const qualityMessage = `Kualitas udara ${airQuality.text}. ${airQuality.icon}`;
+
+                if (airQuality.level === 0 && showToast) {
+                  activeAirQualityToastIdRef.current = showToast(qualityMessage, 'success', 5000, false);
+                } else if (airQuality.level === 1 && showToast) {
+                  activeAirQualityToastIdRef.current = showToast(qualityMessage, 'warning', 7000, false);
+                } else if (airQuality.level === 2 && showToast) {
+                  activeAirQualityToastIdRef.current = showToast(qualityMessage, 'warning', 0, true);
+                } else if (airQuality.level === 3 && showToast) {
+                  activeAirQualityToastIdRef.current = showToast(qualityMessage, 'error', 0, true);
+                }
+
+                previousAirQualityStatusRef.current = airQuality.status;
               }
             }
           }
@@ -111,8 +150,14 @@ export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
             id: index + 1,
             humidity: data[key].humidity || 0,
             temperature: data[key].temperature || 0,
-            mq135_ratio: data[key].mq135_ratio || 0,
-            mq7_ratio: data[key].mq7_ratio || 0,
+            mq135_ratio: Number(data[key].mq135_ratio) || 0,
+            mq7_ratio: Number(data[key].mq7_ratio) || 0,
+            mq135_ppm:
+              Number(data[key].mq135_ppm) ||
+              calculateMq135Ppm(Number(data[key].mq135_ratio) || 0),
+            mq7_ppm:
+              Number(data[key].mq7_ppm) ||
+              calculateMq7Ppm(Number(data[key].mq7_ratio) || 0),
             timestamp: data[key].timestamp || '',
             device_status: data[key].device_status || 'offline',
             mq135_status: data[key].mq135_status || 'Unknown',
@@ -140,7 +185,7 @@ export const useSensorData = ({ showSuccess, showError, showWarning } = {}) => {
       unsubscribeLatest();
       unsubscribeHistory();
     };
-  }, [showSuccess, showError, showWarning]);
+  }, [showSuccess, showError, showWarning, showToast, hideToast]);
 
   return {
     latestData,

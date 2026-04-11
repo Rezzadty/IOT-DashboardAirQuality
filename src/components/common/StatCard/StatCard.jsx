@@ -48,16 +48,16 @@ function StatCard({ data }) {
     {
       title: 'Gas MQ135',
       key: 'mq135_ratio',
-      unit: 'PPM',
+      unit: 'Ratio',
       label: 'MQ135',
       color: '#9b59b6',
       description: 'Mendeteksi kualitas udara dan gas berbahaya',
-      decimals: 0
+      decimals: 2
     },
     {
       title: 'Gas MQ7',
       key: 'mq7_ratio',
-      unit: 'PPM',
+      unit: 'Ratio',
       label: 'MQ7',
       color: '#f39c12',
       description: 'Mendeteksi Karbon Monoksida',
@@ -70,7 +70,9 @@ function StatCard({ data }) {
     humidity: 0,
     temperature: 0,
     mq135_ratio: 0,
-    mq7_ratio: 0
+    mq7_ratio: 0,
+    mq135_ppm: 0,
+    mq7_ppm: 0
   };
 
   // Hitung status kualitas udara berdasarkan MQ135 dan MQ7
@@ -124,7 +126,15 @@ function StatCard({ data }) {
                 <span className="value-unit">{config.unit}</span>
               </div>
               {config.description && (
-                <p className="stat-card-description">{config.description}</p>
+                <>
+                  <p className="stat-card-description">{config.description}</p>
+                  {config.key === 'mq135_ratio' && (
+                    <p className="stat-card-description">Estimasi PPM: {Number(latestData.mq135_ppm || 0).toFixed(2)}</p>
+                  )}
+                  {config.key === 'mq7_ratio' && (
+                    <p className="stat-card-description">Estimasi PPM: {Number(latestData.mq7_ppm || 0).toFixed(2)}</p>
+                  )}
+                </>
               )}
             </div>
           </div>

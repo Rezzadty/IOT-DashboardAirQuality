@@ -343,9 +343,9 @@ export default function SensorChart({ data }) {
       ], "Data Suhu & Kelembapan", { yAxisTitle: 'Suhu / Kelembapan' })}
       
       {renderMultiChart([
-        { label: 'Sensor Gas MQ-135 (PPM)', values: mq135Values, color: '#9b59b6', valuePrecision: 2 },
-        { label: 'Sensor Gas MQ-7 (PPM)', values: mq7Values, color: '#f39c12', valuePrecision: 2 }
-      ], "Data Sensor Gas MQ-135 & MQ-7", { yAxisTitle: 'Nilai Sensor' })}
+        { label: 'Sensor Gas MQ-135 (Ratio)', values: mq135Values, color: '#9b59b6', valuePrecision: 2 },
+        { label: 'Sensor Gas MQ-7 (Ratio)', values: mq7Values, color: '#f39c12', valuePrecision: 2 }
+      ], "Data Sensor Gas MQ-135 & MQ-7", { yAxisTitle: 'Rasio (Rs/R0)' })}
     </div>
   );
 }

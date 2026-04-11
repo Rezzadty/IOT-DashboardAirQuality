@@ -15,13 +15,15 @@ import './Dashboard.css';
 const Dashboard = () => {
   const [showLogoutPopup, setShowLogoutPopup] = useState(false);
   
-  const { toasts, showSuccess, showError, showWarning, hideToast } = useToast();
+  const { toasts, showToast, showSuccess, showError, showWarning, hideToast } = useToast();
   
   // Fetch sensor data menggunakan custom hook
   const { latestData, sensorData, deviceStatus, loading, error } = useSensorData({
+    showToast,
     showSuccess,
     showError,
-    showWarning
+    showWarning,
+    hideToast
   });
 
   const handleLogoutClick = () => {

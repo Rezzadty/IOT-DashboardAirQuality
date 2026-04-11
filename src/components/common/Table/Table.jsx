@@ -143,7 +143,9 @@ const Table = ({ data }) => {
         formatNumber(item?.humidity, 2),
         formatNumber(item?.temperature, 2),
         formatNumber(item?.mq135_ratio, 2),
+        formatNumber(item?.mq135_ppm, 2),
         formatNumber(item?.mq7_ratio, 2),
+        formatNumber(item?.mq7_ppm, 2),
         formatDateTimeId(item?.timestamp),
       ]);
       
@@ -154,7 +156,9 @@ const Table = ({ data }) => {
           'Humidity (%)',
           'Temperature (°C)',
           'MQ-135 Ratio',
+          'MQ-135 PPM',
           'MQ-7 Ratio',
+          'MQ-7 PPM',
           'Tanggal'
         ]],
         body: tableData,
@@ -183,10 +187,12 @@ const Table = ({ data }) => {
         columnStyles: {
           0: { halign: 'center', cellWidth: 28 },
           1: { halign: 'right', cellWidth: 76 },
-          2: { halign: 'right', cellWidth: 90 },
-          3: { halign: 'right', cellWidth: 74 },
-          4: { halign: 'right', cellWidth: 68 },
-          5: { halign: 'left', cellWidth: 130 },
+          2: { halign: 'right', cellWidth: 72 },
+          3: { halign: 'right', cellWidth: 60 },
+          4: { halign: 'right', cellWidth: 60 },
+          5: { halign: 'right', cellWidth: 56 },
+          6: { halign: 'right', cellWidth: 56 },
+          7: { halign: 'left', cellWidth: 100 },
         },
         didDrawPage: () => {
           const pageNumber =
@@ -243,7 +249,9 @@ const Table = ({ data }) => {
                 <th>Humidity (%)</th>
                 <th>Temperature (°C)</th>
                 <th>MQ-135 Ratio</th>
+                <th>MQ-135 PPM</th>
                 <th>MQ-7 Ratio</th>
+                <th>MQ-7 PPM</th>
                 <th>Tanggal</th>
               </tr>
             </thead>
@@ -253,8 +261,10 @@ const Table = ({ data }) => {
                   <td>{indexOfFirstItem + index + 1}</td>
                   <td>{item.humidity}</td>
                   <td>{item.temperature}</td>
-                  <td>{item.mq135_ratio}</td>
-                  <td>{item.mq7_ratio}</td>
+                  <td>{formatNumber(item.mq135_ratio, 2)}</td>
+                  <td>{formatNumber(item.mq135_ppm, 2)}</td>
+                  <td>{formatNumber(item.mq7_ratio, 2)}</td>
+                  <td>{formatNumber(item.mq7_ppm, 2)}</td>
                   <td>{item.timestamp}</td>
                 </tr>
               ))}

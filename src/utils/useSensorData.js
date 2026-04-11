@@ -24,7 +24,7 @@ const ignoreExpectedPermissionError = (err) => {
  * @param {Object} options - Options untuk toast notifications
  * @returns {Object} { latestData, sensorData, deviceStatus, loading, error }
  */
-export const useSensorData = ({ showToast, showSuccess, showError, hideToast } = {}) => {
+export const useSensorData = ({ showToast, showSuccess, showError, showWarning, hideToast } = {}) => {
   const [latestData, setLatestData] = useState(null);
   const [sensorData, setSensorData] = useState([]);
   const [deviceStatus, setDeviceStatus] = useState({ isOnline: false });
@@ -47,6 +47,10 @@ export const useSensorData = ({ showToast, showSuccess, showError, hideToast } =
         }
 
         const data = snapshot.val();
+        if (!data || typeof data !== 'object') {
+          setLoading(false);
+          return;
+        }
         const mq135Ratio = Number(data.mq135_ratio) || 0;
         const mq7Ratio = Number(data.mq7_ratio) || 0;
 
@@ -101,7 +105,11 @@ export const useSensorData = ({ showToast, showSuccess, showError, hideToast } =
               if (airQuality.level === 0 && showToast) {
                 activeAirQualityToastIdRef.current = showToast(qualityMessage, 'success', 5000, false);
               } else if (airQuality.level === 1 && showToast) {
-                activeAirQualityToastIdRef.current = showToast(qualityMessage, 'warning', 7000, false);
+                if (typeof showWarning === 'function') {
+                  activeAirQualityToastIdRef.current = showWarning(qualityMessage, 7000);
+                } else {
+                  activeAirQualityToastIdRef.current = showToast(qualityMessage, 'warning', 7000, false);
+                }
               } else if (airQuality.level === 2 && showToast) {
                 activeAirQualityToastIdRef.current = showToast(qualityMessage, 'warning', 0, true);
               } else if (airQuality.level === 3 && showToast) {
@@ -142,6 +150,11 @@ export const useSensorData = ({ showToast, showSuccess, showError, hideToast } =
       (snapshot) => {
         if (snapshot.exists()) {
           const data = snapshot.val();
+          if (!data || typeof data !== 'object') {
+            setSensorData([]);
+            setLoading(false);
+            return;
+          }
           const dataArray = Object.keys(data).map((key, index) => {
             const mq135Ratio = Number(data[key].mq135_ratio) || 0;
             const mq7Ratio = Number(data[key].mq7_ratio) || 0;
@@ -185,7 +198,7 @@ export const useSensorData = ({ showToast, showSuccess, showError, hideToast } =
       unsubscribeLatest();
       unsubscribeHistory();
     };
-  }, [showToast, showSuccess, showError, hideToast]);
+  }, [showToast, showSuccess, showError, showWarning, hideToast]);
 
   return {
     latestData,

@@ -124,15 +124,8 @@ export default function SensorChart({ data }) {
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
-  if (!data || data.length === 0) {
-    return (
-      <div className="sensor-chart-container">
-        <div className="no-data-text">Tidak ada data untuk ditampilkan</div>
-      </div>
-    );
-  }
-
-  const chartData = data.slice(0, 10).reverse();
+  const hasData = Array.isArray(data) && data.length > 0;
+  const chartData = hasData ? data.slice(0, 10).reverse() : [];
 
   // Responsive sizes
   const mobile = viewportWidth <= 480;
@@ -160,6 +153,14 @@ export default function SensorChart({ data }) {
     }),
     [fontSize]
   );
+
+  if (!hasData) {
+    return (
+      <div className="sensor-chart-container">
+        <div className="no-data-text">Tidak ada data untuk ditampilkan</div>
+      </div>
+    );
+  }
 
   // Chart options configuration
   const getChartOptions = (yScale) => ({

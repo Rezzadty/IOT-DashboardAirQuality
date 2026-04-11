@@ -245,6 +245,94 @@
   margin: 0;
 }
 
+/* Error Popup */
+.error-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(3, 10, 20, 0.72);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+  cursor: pointer;
+}
+
+.error-popup {
+  background: rgba(12, 29, 51, 0.96);
+  border-radius: var(--radius-md);
+  padding: 40px;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  animation: popIn 0.25s ease;
+  min-width: 320px;
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  cursor: default;
+}
+
+.error-popup-icon {
+  width: 80px;
+  height: 80px;
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.22);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 48px;
+  animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.error-popup h3 {
+  color: var(--text-0);
+  font-size: 24px;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.error-popup p {
+  color: var(--text-1);
+  font-size: 14px;
+  margin: 0 0 20px 0;
+}
+
+.error-popup-button {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.85), rgba(185, 28, 28, 0.85));
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--ease), filter var(--ease);
+}
+
+.error-popup-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.error-popup-button:active {
+  transform: translateY(0);
+}
+
 /* Responsive Design */
 @media (max-width: 480px) {
   .login-card {
@@ -282,6 +370,22 @@
   }
 
   .success-popup h3 {
+    font-size: 20px;
+  }
+
+  .error-popup {
+    padding: 30px;
+    min-width: 280px;
+    margin: 0 20px;
+  }
+
+  .error-popup-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 36px;
+  }
+
+  .error-popup h3 {
     font-size: 20px;
   }
 }

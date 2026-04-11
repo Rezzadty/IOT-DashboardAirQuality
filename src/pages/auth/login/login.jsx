@@ -13,6 +13,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Fungsi untuk mendapatkan pesan error yang ramah pengguna
@@ -85,7 +86,9 @@ const Login = () => {
     } catch (error) {
       // Handle error
       console.error('Login error:', error);
-      setError(getErrorMessage(error.code));
+      const errorMessage = getErrorMessage(error.code);
+      setError(errorMessage);
+      setShowErrorPopup(true);
       setLoading(false);
     }
   };
@@ -93,12 +96,18 @@ const Login = () => {
   // Handle perubahan input
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    if (error) setError(''); // Clear error saat user mengetik
+    if (error) {
+      setError(''); // Clear error saat user mengetik
+      setShowErrorPopup(false);
+    }
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    if (error) setError(''); // Clear error saat user mengetik
+    if (error) {
+      setError(''); // Clear error saat user mengetik
+      setShowErrorPopup(false);
+    }
   };
 
   return (
@@ -138,13 +147,6 @@ const Login = () => {
             />
           </div>
 
-          {error && (
-            <div className="error-message">
-              <span className="error-icon">⚠️</span>
-              {error}
-            </div>
-          )}
-
           <button
             type="submit"
             className="login-button"
@@ -162,6 +164,22 @@ const Login = () => {
             <div className="success-icon">✓</div>
             <h3>Login Berhasil!</h3>
             <p>Mengalihkan ke dashboard...</p>
+          </div>
+        </div>
+      )}
+
+      {/* Error Popup */}
+      {showErrorPopup && (
+        <div className="error-popup-overlay" onClick={() => setShowErrorPopup(false)}>
+          <div className="error-popup" onClick={(e) => e.stopPropagation()}>
+            <h3>Login Gagal!</h3>
+            <p>{error}</p>
+            <button 
+              className="error-popup-button" 
+              onClick={() => setShowErrorPopup(false)}
+            >
+              Tutup
+            </button>
           </div>
         </div>
       )}
